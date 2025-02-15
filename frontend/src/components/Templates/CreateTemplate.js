@@ -1,3 +1,4 @@
+// src/components/Templates/CreateTemplate.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -64,7 +65,10 @@ export default function CreateTemplate() {
         },
         body: JSON.stringify({ title, description, questions })
       });
-      if (!res.ok) throw new Error('Failed to create template');
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to create template');
+      }
       alert('Template created');
       navigate('/');
     } catch (err) {

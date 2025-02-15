@@ -1,10 +1,9 @@
-/* routes/templateRoutes.js */
+// routes/templateRoutes.js
 const express = require('express');
 const router = express.Router();
 const authenticateToken = require('../middlewares/authMiddleware');
 const Template = require('../models/Template');
 
-// GET all
 router.get('/', async (req, res) => {
   try {
     const templates = await Template.find().populate('author', 'email username');
@@ -14,33 +13,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/search', async (req, res) => {
-  try {
-    const q = req.query.q || '';
-    const regex = new RegExp(q, 'i');
-    const templates = await Template.find({
-      $or: [
-        { title: { $regex: regex } },
-        { description: { $regex: regex } },
-        {
-          questions: {
-            $elemMatch: { questionText: { $regex: regex } }
-          }
-        },
-        {
-          questions: {
-            $elemMatch: { type: { $regex: regex } }
-          }
-        }
-      ]
-    }).populate('author', 'email username');
-    res.json({ templates });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// GET one
 router.get('/:id', async (req, res) => {
   try {
     const template = await Template.findById(req.params.id).populate('author', 'email username');
@@ -51,9 +23,13 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST (admin or remove check if all users can create)
+// If you only want admins to create templates, uncomment the check below.
+// Otherwise, allow all authenticated users to create.
 router.post('/', authenticateToken, async (req, res) => {
   try {
+    // if (req.user.role !== 'admin') {
+    //   return res.status(403).json({ message: 'Only admin can create templates' });
+    // }
     const { title, description, questions } = req.body;
     const newTemplate = new Template({
       title,
@@ -68,7 +44,6 @@ router.post('/', authenticateToken, async (req, res) => {
   }
 });
 
-// PUT
 router.put('/:id', authenticateToken, async (req, res) => {
   try {
     const template = await Template.findById(req.params.id);
@@ -86,7 +61,6 @@ router.put('/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// DELETE
 router.delete('/:id', authenticateToken, async (req, res) => {
   try {
     const template = await Template.findById(req.params.id);
