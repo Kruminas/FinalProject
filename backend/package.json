@@ -4,7 +4,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "postinstall": "cd ../Frontend && npm install && npm run build && cp -r build ../Backend/"
   },
   "keywords": [],
   "author": "",
