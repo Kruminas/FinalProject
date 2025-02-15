@@ -1,17 +1,16 @@
 // src/services/authService.js
-const API_URL = 'http://localhost:5000/api'; // Adjust if needed
+const API_URL = process.env.REACT_APP_API_URL || 'https://finalproject-sjxn.onrender.com';
 
-// Register new user
-export async function registerUser({ username, email, password }) {
-  const res = await fetch(`${API_URL}/auth/register`, {
+export async function loginUser({ email, password }) {
+  const res = await fetch(`${API_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, email, password }),
+    body: JSON.stringify({ email, password })
   });
-  if (!res.ok) {
-    throw new Error('Registration failed');
-  }
-  return res.json();
+  if (!res.ok) throw new Error('Login failed');
+  const data = await res.json();
+  localStorage.setItem('token', data.token);
+  return data;
 }
 
 // Login existing user, store token in localStorage

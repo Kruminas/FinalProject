@@ -1,15 +1,12 @@
 // src/services/templateService.js
 import { getToken } from './authService';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = process.env.REACT_APP_API_URL || 'https://finalproject-sjxn.onrender.com';
 
-// Fetch all templates
 export async function fetchTemplates() {
   const res = await fetch(`${API_URL}/templates`);
-  if (!res.ok) {
-    throw new Error('Could not fetch templates');
-  }
-  return res.json(); // { templates: [...] }
+  if (!res.ok) throw new Error('Failed to fetch templates');
+  return res.json();
 }
 
 // Create new template (admin only)
