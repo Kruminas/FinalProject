@@ -1,7 +1,8 @@
-// src/components/Auth/Register.js
+/* src/components/Auth/Register.js */
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { registerUser } from '../../services/authService';
+
+const API_URL = '/api';
 
 export default function Register() {
   const [username, setUsername] = useState('');
@@ -12,8 +13,16 @@ export default function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await registerUser({ username, email, password });
-      alert('Registration successful! You can now log in.');
+      const res = await fetch(`${API_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password })
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Registration failed');
+      }
+      alert('Registration successful');
       navigate('/login');
     } catch (err) {
       alert(err.message);
