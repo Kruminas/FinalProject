@@ -1,0 +1,124 @@
+// routes/adminRoutes.js
+const express = require('express');
+const router = express.Router();
+const User = require('../models/User');
+const authenticateToken = require('../middlewares/authMiddleware');
+const { checkAdmin } = require('../middlewares/roleMiddleware');
+
+// GET /api/admin/users
+router.get('/users', authenticateToken, checkAdmin, async (req, res) => {
+  try {
+    const users = await User.find();
+    res.json({ users });  // Must return { users: [] }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE user
+router.delete('/users/:id', authenticateToken, checkAdmin, async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json({ message: `User ${user.username} deleted` });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ADD admin
+router.patch('/users/:id/addAdmin', authenticateToken, checkAdmin, async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { role: 'admin' },
+      { new: true }
+    );
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json({ message: `${user.username} is now admin`, user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// REMOVE admin (can remove from itself)
+router.patch('/users/:id/removeAdmin', authenticateToken, checkAdmin, async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { role: 'user' },
+      { new: true }
+    );
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json({ message: `Admin rights removed from ${user.username}`, user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PATCH /api/admin/users/:id/block
+router.patch('/users/:id/block', authenticateToken, checkAdmin, async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { isBlocked: true },
+      { new: true }
+    );
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json({ message: `User ${user.username} blocked`, user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PATCH /api/admin/users/:id/unblock
+router.patch('/users/:id/unblock', authenticateToken, checkAdmin, async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id, { isBlocked: false }, { new: true }
+    );
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json({ message: `User ${user.username} unblocked`, user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE /api/admin/users/:id
+router.delete('/users/:id', authenticateToken, checkAdmin, async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json({ message: `User ${user.username} deleted` });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PATCH /api/admin/users/:id/addAdmin
+router.patch('/users/:id/addAdmin', authenticateToken, checkAdmin, async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id, { role: 'admin' }, { new: true }
+    );
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json({ message: `User ${user.username} is now admin`, user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PATCH /api/admin/users/:id/removeAdmin
+router.patch('/users/:id/removeAdmin', authenticateToken, checkAdmin, async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id, { role: 'user' }, { new: true }
+    );
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json({ message: `Admin rights removed from ${user.username}`, user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+module.exports = router;
