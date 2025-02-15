@@ -4,9 +4,10 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const path = require('path');
-const app = express();
+require('dotenv').config();
 
-app.use(cors());
+const app = express();
+app.use(cors({ origin: 'https://finalproject-sjxn.onrender.com' }));
 app.use(bodyParser.json());
 
 mongoose.connect(process.env.MONGO_URI, {
