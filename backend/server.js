@@ -30,13 +30,11 @@ mongoose.connect(
 //         SERVE REACT BUILD
 // ================================
 
-// 1) Serve static files from the React build folder
-app.use(express.static(path.join(__dirname, "build")));
-
-// 2) Catch-all route: send back React's index.html for any non-API route
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
+app.use(express.static(path.join(__dirname, 'build')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
+
 
 // Use routes
 app.use('/api/auth', authRoutes);
