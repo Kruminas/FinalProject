@@ -2,8 +2,8 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const jwt = require('jsonwebtoken');
 const secret = process.env.JWT_SECRET || 'mySecretKey';
 
 router.post('/register', async (req, res) => {
@@ -13,9 +13,10 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ message: 'All fields are required' });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, email, password: hashedPassword });
+    // Automatically set role to 'admin'
+    const newUser = new User({ username, email, password: hashedPassword, role: 'admin' });
     await newUser.save();
-    res.status(201).json({ message: 'User registered successfully' });
+    res.status(201).json({ message: 'User registered as admin successfully' });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

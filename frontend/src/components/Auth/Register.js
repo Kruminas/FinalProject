@@ -1,4 +1,4 @@
-/* src/components/Auth/Register.js */
+// src/components/Auth/Register.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,9 +20,9 @@ export default function Register() {
       });
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || 'Registration failed');
+        throw new Error(data.error || data.message || 'Registration failed');
       }
-      alert('Registration successful');
+      alert('Registered as admin');
       navigate('/login');
     } catch (err) {
       alert(err.message);
@@ -31,7 +31,7 @@ export default function Register() {
 
   return (
     <div className="container mt-4" style={{ maxWidth: '400px' }}>
-      <h2>Register</h2>
+      <h2>Register (Auto-Admin)</h2>
       <form onSubmit={handleRegister}>
         <div className="mb-3">
           <label>Username</label>

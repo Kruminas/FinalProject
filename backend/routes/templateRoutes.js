@@ -27,9 +27,6 @@ router.get('/:id', async (req, res) => {
 // Otherwise, allow all authenticated users to create.
 router.post('/', authenticateToken, async (req, res) => {
   try {
-    // if (req.user.role !== 'admin') {
-    //   return res.status(403).json({ message: 'Only admin can create templates' });
-    // }
     const { title, description, questions } = req.body;
     const newTemplate = new Template({
       title,
@@ -43,6 +40,7 @@ router.post('/', authenticateToken, async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
+
 
 router.put('/:id', authenticateToken, async (req, res) => {
   try {
@@ -76,3 +74,4 @@ router.delete('/:id', authenticateToken, async (req, res) => {
 });
 
 module.exports = router;
+  

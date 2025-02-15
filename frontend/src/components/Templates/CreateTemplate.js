@@ -141,7 +141,11 @@ export default function CreateTemplate() {
                     </button>
                   </div>
                 ))}
-                <button type="button" className="btn btn-secondary" onClick={() => addOption(idx)}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => addOption(idx)}
+                >
                   Add Option
                 </button>
               </div>
