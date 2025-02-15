@@ -40,7 +40,9 @@ export default function Navbar() {
           <>
             <Link to="/forms" className="nav-item nav-link">All Forms (Admin)</Link>
             <Link to="/admin/users" className="nav-item nav-link">Manage Users (Admin)</Link>
-            <button className="btn btn-link nav-item nav-link" onClick={handleLogout}>Logout</button>
+            <button className="btn btn-link nav-item nav-link" onClick={handleLogout}>
+              Logout
+            </button>
           </>
         )}
       </div>

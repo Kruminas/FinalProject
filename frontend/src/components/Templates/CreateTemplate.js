@@ -1,16 +1,13 @@
-/* src/components/Templates/CreateTemplate.js */
+// src/components/Templates/CreateTemplate.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 
 export default function CreateTemplate() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [questions, setQuestions] = useState([
-    { questionText: '', type: 'text', options: [] }
-  ]);
-
+  const [questions, setQuestions] = useState([{ questionText: '', type: 'text', options: [] }]);
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
 
@@ -23,7 +20,7 @@ export default function CreateTemplate() {
   const handleQuestionTypeChange = (index, newType) => {
     const updated = [...questions];
     updated[index].type = newType;
-    if (['multiple-choice', 'checkbox', 'radio'].includes(newType) && !updated[index].options) {
+    if (['multiple-choice', 'checkbox'].includes(newType) && !updated[index].options) {
       updated[index].options = [''];
     }
     setQuestions(updated);
@@ -51,9 +48,9 @@ export default function CreateTemplate() {
     setQuestions(updated);
   };
 
-  const handleOptionChange = (qIdx, optIdx, newVal) => {
+  const handleOptionChange = (qIdx, optIdx, newValue) => {
     const updated = [...questions];
-    updated[qIdx].options[optIdx] = newVal;
+    updated[qIdx].options[optIdx] = newValue;
     setQuestions(updated);
   };
 
@@ -120,11 +117,10 @@ export default function CreateTemplate() {
                 <option value="number">Number</option>
                 <option value="multiple-choice">Multiple Choice</option>
                 <option value="checkbox">Checkbox</option>
-                <option value="radio">Radio</option>
               </select>
             </div>
-            {['multiple-choice', 'checkbox', 'radio'].includes(q.type) && (
-              <div>
+            {['multiple-choice', 'checkbox'].includes(q.type) && (
+              <div className="mb-2">
                 <h6>Options</h6>
                 {q.options.map((opt, optIdx) => (
                   <div key={optIdx} className="d-flex mb-2">

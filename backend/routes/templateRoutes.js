@@ -77,7 +77,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     const template = await Template.findById(req.params.id);
     if (!template) return res.status(404).json({ message: 'Template not found' });
     if (template.author.toString() !== req.user.id && req.user.role !== 'admin') {
-      return res.status(403).json({ message: 'Not authorized' });
+      return res.status(403).json({ message: 'Not authorized to edit this template' });
     }
     template.title = req.body.title ?? template.title;
     template.description = req.body.description ?? template.description;
@@ -93,12 +93,12 @@ router.put('/:id', authenticateToken, async (req, res) => {
 router.delete('/:id', authenticateToken, async (req, res) => {
   try {
     const template = await Template.findById(req.params.id);
-    if (!template) return res.status(404).json({ message: 'Not found' });
+    if (!template) return res.status(404).json({ message: 'Template not found' });
     if (template.author.toString() !== req.user.id && req.user.role !== 'admin') {
-      return res.status(403).json({ message: 'Not authorized' });
+      return res.status(403).json({ message: 'Not authorized to delete this template' });
     }
     await Template.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Deleted' });
+    res.json({ message: 'Template deleted' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 
 export default function TemplatePage() {
   const { id } = useParams();
@@ -16,15 +16,10 @@ export default function TemplatePage() {
   useEffect(() => {
     (async () => {
       try {
-        if (!token) {
-          alert('Not authorized');
-          navigate('/');
-          return;
-        }
         const res = await fetch(`${API_URL}/templates/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        if (!res.ok) throw new Error('Not authorized or template not found');
+        if (!res.ok) throw new Error('Failed to load template');
         const data = await res.json();
         setTemplate(data.template);
         setTitle(data.template.title || '');
@@ -90,7 +85,7 @@ export default function TemplatePage() {
         },
         body: JSON.stringify({ title, description, questions })
       });
-      if (!res.ok) throw new Error('Not authorized or failed to update');
+      if (!res.ok) throw new Error('Failed to update template');
       alert('Template updated');
       navigate('/');
     } catch (err) {
@@ -165,11 +160,7 @@ export default function TemplatePage() {
                   </button>
                 </div>
               ))}
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={() => addOption(idx)}
-              >
+              <button type="button" className="btn btn-secondary" onClick={() => addOption(idx)}>
                 Add Option
               </button>
             </div>

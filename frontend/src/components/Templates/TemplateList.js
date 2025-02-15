@@ -1,31 +1,13 @@
-/* src/components/Templates/TemplateList.js */
+// src/components/Templates/TemplateList.js
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-const API_URL = 'http://localhost:5000/api';
-function decodeToken(token) {
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload;
-  } catch {
-    return null;
-  }
-}
+const API_URL = '/api';
 
 export default function TemplateList() {
   const [templates, setTemplates] = useState([]);
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
-
-  let userId = null;
-  let userRole = null;
-  if (token) {
-    const decoded = decodeToken(token);
-    if (decoded) {
-      userId = decoded.id;
-      userRole = decoded.role;
-    }
-  }
 
   const fetchTemplates = async () => {
     try {
@@ -98,22 +80,18 @@ export default function TemplateList() {
                 >
                   Fill Out
                 </Link>
-                {(userRole === 'admin' || String(tpl.author?._id) === userId) && (
-                  <>
-                    <button
-                      className="btn btn-secondary btn-sm me-2"
-                      onClick={() => handleEdit(tpl._id)}
-                    >
-                      Edit Template
-                    </button>
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() => handleDelete(tpl._id)}
-                    >
-                      Delete
-                    </button>
-                  </>
-                )}
+                <button
+                  className="btn btn-secondary btn-sm me-2"
+                  onClick={() => handleEdit(tpl._id)}
+                >
+                  Edit Template
+                </button>
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() => handleDelete(tpl._id)}
+                >
+                  Delete
+                </button>
               </>
             ) : (
               <p>(Log in for more actions)</p>

@@ -1,5 +1,5 @@
 // src/services/authService.js
-const API_URL = process.env.REACT_APP_API_URL || 'https://finalproject-backend.onrender.com/api';
+const API_URL = '/api';
 
 export async function registerUser({ username, email, password }) {
   const res = await fetch(`${API_URL}/auth/register`, {

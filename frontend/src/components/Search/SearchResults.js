@@ -1,8 +1,8 @@
-/* src/components/Search/SearchResults.js */
+// src/components/Search/SearchResults.js
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 
 export default function SearchResults() {
   const [results, setResults] = useState([]);

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 
 export default function FillForm() {
   const { id } = useParams();
@@ -15,7 +15,7 @@ export default function FillForm() {
     (async () => {
       try {
         const res = await fetch(`${API_URL}/templates/${id}`);
-        if (!res.ok) throw new Error('Failed to load template');
+        if (!res.ok) throw new Error('Template not found');
         const data = await res.json();
         setTemplate(data.template);
         if (data.template.questions) {
@@ -33,30 +33,12 @@ export default function FillForm() {
     setAnswers(updated);
   };
 
-  const handleRadioChange = (qIdx, option) => {
-    const updated = [...answers];
-    updated[qIdx] = option;
-    setAnswers(updated);
-  };
-
-  const handleCheckboxChange = (qIdx, option, checked) => {
-    const arr = Array.isArray(answers[qIdx]) ? answers[qIdx] : [];
-    const updated = [...answers];
-    if (checked) {
-      updated[qIdx] = [...arr, option];
-    } else {
-      updated[qIdx] = arr.filter((o) => o !== option);
-    }
-    setAnswers(updated);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!token) {
       alert('Please log in');
       return;
     }
-    if (!template) return;
     const finalAnswers = template.questions.map((q, idx) => ({
       questionId: q._id,
       answer: answers[idx]
@@ -92,9 +74,7 @@ export default function FillForm() {
       <form onSubmit={handleSubmit}>
         {template.questions.map((q, qIdx) => (
           <div key={q._id} className="mb-3">
-            <label className="form-label">
-              {q.questionText}
-            </label>
+            <label className="form-label">{q.questionText}</label>
             {q.type === 'text' && (
               <input
                 type="text"
@@ -111,23 +91,7 @@ export default function FillForm() {
                 onChange={(e) => handleTextChange(qIdx, e.target.value)}
               />
             )}
-            {q.type === 'radio' && q.options && (
-              <div>
-                {q.options.map((opt, optIdx) => (
-                  <div key={optIdx}>
-                    <input
-                      type="radio"
-                      name={`q-${q._id}`}
-                      value={opt}
-                      checked={answers[qIdx] === opt}
-                      onChange={() => handleRadioChange(qIdx, opt)}
-                    />
-                    <label className="ms-2">{opt}</label>
-                  </div>
-                ))}
-              </div>
-            )}
-            {q.type === 'multiple-choice' && q.options && (
+            {q.type === 'multiple-choice' && (
               <select
                 className="form-select"
                 value={answers[qIdx]}
@@ -141,7 +105,7 @@ export default function FillForm() {
                 ))}
               </select>
             )}
-            {q.type === 'checkbox' && q.options && (
+            {q.type === 'checkbox' && (
               <div>
                 {q.options.map((opt, optIdx) => {
                   const arr = Array.isArray(answers[qIdx]) ? answers[qIdx] : [];
@@ -150,7 +114,18 @@ export default function FillForm() {
                       <input
                         type="checkbox"
                         checked={arr.includes(opt)}
-                        onChange={(e) => handleCheckboxChange(qIdx, opt, e.target.checked)}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          let newArr = Array.isArray(answers[qIdx]) ? answers[qIdx] : [];
+                          if (checked) {
+                            newArr = [...newArr, opt];
+                          } else {
+                            newArr = newArr.filter((o) => o !== opt);
+                          }
+                          const updated = [...answers];
+                          updated[qIdx] = newArr;
+                          setAnswers(updated);
+                        }}
                       />
                       <label className="ms-2">{opt}</label>
                     </div>
