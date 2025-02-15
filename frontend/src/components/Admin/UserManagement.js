@@ -1,10 +1,9 @@
-/* src/components/Admin/UserManagement.js */
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Container } from 'react-bootstrap';
 
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
-  const API_URL = 'http://localhost:5000/api';
+  const API_URL = '/api';
   const token = localStorage.getItem('token');
 
   const fetchUsers = async () => {
@@ -22,8 +21,7 @@ export default function UserManagement() {
 
   useEffect(() => {
     fetchUsers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [token]);
 
   const handleBlock = async (id) => {
     try {
@@ -103,6 +101,7 @@ export default function UserManagement() {
           <tr>
             <th>ID</th>
             <th>Username</th>
+            <th>Email</th>
             <th>Role</th>
             <th>Blocked</th>
             <th>Actions</th>
@@ -113,6 +112,7 @@ export default function UserManagement() {
             <tr key={u._id}>
               <td>{u._id}</td>
               <td>{u.username}</td>
+              <td>{u.email}</td>
               <td>{u.role}</td>
               <td>{u.isBlocked ? 'Yes' : 'No'}</td>
               <td>

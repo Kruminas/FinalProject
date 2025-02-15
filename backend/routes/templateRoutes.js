@@ -44,7 +44,7 @@ router.get('/search', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const template = await Template.findById(req.params.id).populate('author', 'email username');
-    if (!template) return res.status(404).json({ message: 'Not found' });
+    if (!template) return res.status(404).json({ message: 'Template not found' });
     res.json({ template });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -54,9 +54,6 @@ router.get('/:id', async (req, res) => {
 // POST (admin or remove check if all users can create)
 router.post('/', authenticateToken, async (req, res) => {
   try {
-    // if (req.user.role !== 'admin') {
-    //   return res.status(403).json({ message: 'Admin only' });
-    // }
     const { title, description, questions } = req.body;
     const newTemplate = new Template({
       title,

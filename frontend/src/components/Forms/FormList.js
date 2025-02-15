@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Card } from 'react-bootstrap';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 
 export default function FormList() {
   const [forms, setForms] = useState([]);
@@ -34,10 +34,10 @@ export default function FormList() {
             <Card.Body>
               <Card.Title>Form ID: {f._id}</Card.Title>
               <Card.Subtitle className="mb-2 text-muted">
-                User: {f.author?.email || '(unknown user)'}
+                User: {f.author?.email || '(unknown)'}
               </Card.Subtitle>
               <Card.Subtitle className="mb-2 text-muted">
-                Template: {f.template?.title || '(no template title)'}
+                Template: {f.template?.title || '(no title)'}
               </Card.Subtitle>
               <Card.Text as="div">
                 <h6>Answers:</h6>

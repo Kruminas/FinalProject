@@ -1,8 +1,9 @@
 /* src/components/Forms/FormPage.js */
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { Container, Card } from 'react-bootstrap';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 
 export default function FormPage() {
   const { id } = useParams();
@@ -15,7 +16,7 @@ export default function FormPage() {
         const res = await fetch(`${API_URL}/forms/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        if (!res.ok) throw new Error('Not authorized or form not found');
+        if (!res.ok) throw new Error('Failed to fetch form');
         const data = await res.json();
         setFormData(data.form);
       } catch (err) {
@@ -25,23 +26,33 @@ export default function FormPage() {
   }, [id, token]);
 
   if (!formData) {
-    return <div className="container mt-4">Loading form...</div>;
+    return <Container className="mt-4">Loading form...</Container>;
   }
 
   return (
-    <div className="container mt-4">
-      <h2>Form: {formData._id}</h2>
-      <p>Answered by: {formData.author?.email}</p>
-      <p>Template: {formData.template?.title}</p>
-      <h4>Answers</h4>
-      {formData.answers.map((ans, idx) => (
-        <div key={idx} className="border p-2 mb-2">
-          <strong>Question ID:</strong> {ans.questionId}
-          <br />
-          <strong>Answer:</strong>{' '}
-          {Array.isArray(ans.answer) ? ans.answer.join(', ') : ans.answer}
-        </div>
-      ))}
-    </div>
+    <Container className="mt-4">
+      <Card>
+        <Card.Body>
+          <Card.Title>Form ID: {formData._id}</Card.Title>
+          <Card.Subtitle className="mb-2 text-muted">
+            User: {formData.author?.email || '(unknown)'}
+          </Card.Subtitle>
+          <Card.Subtitle className="mb-2 text-muted">
+            Template: {formData.template?.title || '(no title)'}
+          </Card.Subtitle>
+          <Card.Text as="div">
+            <h6>Answers:</h6>
+            {formData.answers.map((ans, idx) => (
+              <div key={idx} className="border rounded p-2 mb-2">
+                <strong>Question ID:</strong> {ans.questionId}
+                <br />
+                <strong>Answer:</strong>{' '}
+                {Array.isArray(ans.answer) ? ans.answer.join(', ') : ans.answer}
+              </div>
+            ))}
+          </Card.Text>
+        </Card.Body>
+      </Card>
+    </Container>
   );
 }

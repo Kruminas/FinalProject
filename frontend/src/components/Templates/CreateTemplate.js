@@ -1,4 +1,3 @@
-// src/components/Templates/CreateTemplate.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -138,11 +137,7 @@ export default function CreateTemplate() {
                     </button>
                   </div>
                 ))}
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={() => addOption(idx)}
-                >
+                <button type="button" className="btn btn-secondary" onClick={() => addOption(idx)}>
                   Add Option
                 </button>
               </div>
