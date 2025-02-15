@@ -18,10 +18,13 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Connect to MongoDB
-mongoose.connect('mongodb://127.0.0.1:27017/myformsdb', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(
+  process.env.MONGODB_URI || 'mongodb+srv://dominykaskruminas:vaperdude@dominykas.dwggl.mongodb.net/?retryWrites=true&w=majority&appName=dominykas',
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }
+);
 
 // Use routes
 app.use('/api/auth', authRoutes);
