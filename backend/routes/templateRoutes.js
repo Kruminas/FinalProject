@@ -20,6 +20,32 @@ router.post('/', authenticateToken, async (req, res) => {
   }
 });
 
+router.get('/search', async (req, res) => {
+  try {
+    const q = req.query.q || '';
+    const regex = new RegExp(q, 'i');
+    const templates = await Template.find({
+      $or: [
+        { title: { $regex: regex } },
+        { description: { $regex: regex } },
+        {
+          questions: {
+            $elemMatch: { questionText: { $regex: regex } }
+          }
+        },
+        {
+          questions: {
+            $elemMatch: { type: { $regex: regex } }
+          }
+        }
+      ]
+    }).populate('author', 'email username');
+    res.json({ templates });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.get('/', async (req, res) => {
   try {
     const templates = await Template.find().populate('author', 'email username');
@@ -65,23 +91,6 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     }
     await Template.findByIdAndDelete(req.params.id);
     res.json({ message: 'Template deleted' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-router.get('/search', async (req, res) => {
-  try {
-    const q = req.query.q || '';
-    const regex = new RegExp(q, 'i');
-    const templates = await Template.find({
-      $or: [
-        { title: { $regex: regex } },
-        { description: { $regex: regex } },
-        { 'questions.questionText': { $regex: regex } }
-      ]
-    });
-    res.json({ templates });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
