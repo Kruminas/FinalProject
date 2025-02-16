@@ -4,30 +4,12 @@ const router = express.Router();
 const authenticateToken = require('../middlewares/authMiddleware');
 const Template = require('../models/Template');
 
-router.get('/', async (req, res) => {
-  try {
-    const templates = await Template.find().populate('author', 'email username');
-    res.json({ templates });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-router.get('/:id', async (req, res) => {
-  try {
-    const template = await Template.findById(req.params.id).populate('author', 'email username');
-    if (!template) return res.status(404).json({ message: 'Template not found' });
-    res.json({ template });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// If you only want admins to create templates, uncomment the check below.
-// Otherwise, allow all authenticated users to create.
+// Remove any admin-only checks for template creation
+// so any authenticated user can create a template
 router.post('/', authenticateToken, async (req, res) => {
   try {
     const { title, description, questions } = req.body;
+    // No role check here
     const newTemplate = new Template({
       title,
       description,
@@ -41,7 +23,27 @@ router.post('/', authenticateToken, async (req, res) => {
   }
 });
 
+// If you still want only admins to create, uncomment below
+// router.post('/', authenticateToken, async (req, res) => {
+//   try {
+//     if (req.user.role !== 'admin') {
+//       return res.status(403).json({ message: 'Only admin can create templates' });
+//     }
+//     const { title, description, questions } = req.body;
+//     const newTemplate = new Template({
+//       title,
+//       description,
+//       questions,
+//       author: req.user.id
+//     });
+//     await newTemplate.save();
+//     res.status(201).json(newTemplate);
+//   } catch (err) {
+//     res.status(400).json({ error: err.message });
+//   }
+// });
 
+// The rest remains the same
 router.put('/:id', authenticateToken, async (req, res) => {
   try {
     const template = await Template.findById(req.params.id);
@@ -73,5 +75,23 @@ router.delete('/:id', authenticateToken, async (req, res) => {
   }
 });
 
+router.get('/', async (req, res) => {
+  try {
+    const templates = await Template.find().populate('author', 'email username');
+    res.json({ templates });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.get('/:id', async (req, res) => {
+  try {
+    const template = await Template.findById(req.params.id).populate('author', 'email username');
+    if (!template) return res.status(404).json({ message: 'Template not found' });
+    res.json({ template });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;
-  

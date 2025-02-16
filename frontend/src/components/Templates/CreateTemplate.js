@@ -67,7 +67,7 @@ export default function CreateTemplate() {
       });
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || 'Failed to create template');
+        throw new Error(data.error || data.message || 'Failed to create template');
       }
       alert('Template created');
       navigate('/');
