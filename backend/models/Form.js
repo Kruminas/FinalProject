@@ -8,9 +8,9 @@ const AnswerSchema = new Schema({
 });
 
 const FormSchema = new Schema({
-  template:  { type: mongoose.Schema.Types.ObjectId, ref: 'Template', required: true },
+  template:  { type: Schema.Types.ObjectId, ref: 'Template', required: true },
   answers:   [AnswerSchema],
-  author:    { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  author:    { type: Schema.Types.ObjectId, ref: 'User', required: true },
   createdAt: { type: Date, default: Date.now }
 });
 

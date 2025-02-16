@@ -1,12 +1,13 @@
-// server.js
+/* server.js */
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const path = require('path');
 require('dotenv').config();
 
 const app = express();
+
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -32,5 +33,5 @@ app.get('*', (req, res) => {
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

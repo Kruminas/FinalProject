@@ -1,4 +1,4 @@
-// src/components/Templates/CreateTemplate.js
+/* src/components/Templates/CreateTemplate.js */
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -48,9 +48,9 @@ export default function CreateTemplate() {
     setQuestions(updated);
   };
 
-  const handleOptionChange = (qIdx, optIdx, newValue) => {
+  const handleOptionChange = (qIdx, optIdx, val) => {
     const updated = [...questions];
-    updated[qIdx].options[optIdx] = newValue;
+    updated[qIdx].options[optIdx] = val;
     setQuestions(updated);
   };
 

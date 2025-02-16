@@ -1,15 +1,12 @@
-// routes/templateRoutes.js
+/* routes/templateRoutes.js */
 const express = require('express');
 const router = express.Router();
 const authenticateToken = require('../middlewares/authMiddleware');
 const Template = require('../models/Template');
 
-// Remove any admin-only checks for template creation
-// so any authenticated user can create a template
 router.post('/', authenticateToken, async (req, res) => {
   try {
     const { title, description, questions } = req.body;
-    // No role check here
     const newTemplate = new Template({
       title,
       description,
@@ -20,58 +17,6 @@ router.post('/', authenticateToken, async (req, res) => {
     res.status(201).json(newTemplate);
   } catch (err) {
     res.status(400).json({ error: err.message });
-  }
-});
-
-// If you still want only admins to create, uncomment below
-// router.post('/', authenticateToken, async (req, res) => {
-//   try {
-//     if (req.user.role !== 'admin') {
-//       return res.status(403).json({ message: 'Only admin can create templates' });
-//     }
-//     const { title, description, questions } = req.body;
-//     const newTemplate = new Template({
-//       title,
-//       description,
-//       questions,
-//       author: req.user.id
-//     });
-//     await newTemplate.save();
-//     res.status(201).json(newTemplate);
-//   } catch (err) {
-//     res.status(400).json({ error: err.message });
-//   }
-// });
-
-// The rest remains the same
-router.put('/:id', authenticateToken, async (req, res) => {
-  try {
-    const template = await Template.findById(req.params.id);
-    if (!template) return res.status(404).json({ message: 'Template not found' });
-    if (template.author.toString() !== req.user.id && req.user.role !== 'admin') {
-      return res.status(403).json({ message: 'Not authorized to edit this template' });
-    }
-    template.title = req.body.title ?? template.title;
-    template.description = req.body.description ?? template.description;
-    template.questions = req.body.questions ?? template.questions;
-    await template.save();
-    res.json({ message: 'Template updated', template });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-router.delete('/:id', authenticateToken, async (req, res) => {
-  try {
-    const template = await Template.findById(req.params.id);
-    if (!template) return res.status(404).json({ message: 'Template not found' });
-    if (template.author.toString() !== req.user.id && req.user.role !== 'admin') {
-      return res.status(403).json({ message: 'Not authorized to delete this template' });
-    }
-    await Template.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Template deleted' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
   }
 });
 
@@ -89,6 +34,37 @@ router.get('/:id', async (req, res) => {
     const template = await Template.findById(req.params.id).populate('author', 'email username');
     if (!template) return res.status(404).json({ message: 'Template not found' });
     res.json({ template });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.put('/:id', authenticateToken, async (req, res) => {
+  try {
+    const template = await Template.findById(req.params.id);
+    if (!template) return res.status(404).json({ message: 'Template not found' });
+    if (template.author.toString() !== req.user.id && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Not authorized to edit' });
+    }
+    template.title = req.body.title ?? template.title;
+    template.description = req.body.description ?? template.description;
+    template.questions = req.body.questions ?? template.questions;
+    await template.save();
+    res.json({ message: 'Template updated', template });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.delete('/:id', authenticateToken, async (req, res) => {
+  try {
+    const template = await Template.findById(req.params.id);
+    if (!template) return res.status(404).json({ message: 'Template not found' });
+    if (template.author.toString() !== req.user.id && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Not authorized to delete' });
+    }
+    await Template.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Template deleted' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

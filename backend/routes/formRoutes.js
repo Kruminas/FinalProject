@@ -1,3 +1,4 @@
+/* routes/formRoutes.js */
 const express = require('express');
 const router = express.Router();
 const authenticateToken = require('../middlewares/authMiddleware');
@@ -6,7 +7,7 @@ const Template = require('../models/Template');
 
 router.get('/', authenticateToken, async (req, res) => {
   try {
-    if (req.user.role !== 'admin') return res.status(403).json({ message: 'Only admin can view all forms' });
+    if (req.user.role !== 'admin') return res.status(403).json({ message: 'Admin only' });
     const forms = await Form.find()
       .populate('author', 'email username')
       .populate('template');
@@ -22,10 +23,12 @@ router.get('/:id', authenticateToken, async (req, res) => {
       .populate('author', 'email username')
       .populate('template');
     if (!form) return res.status(404).json({ message: 'Form not found' });
-    if (req.user.role !== 'admin' &&
-        String(form.author) !== req.user.id &&
-        form.template.author.toString() !== req.user.id) {
-      return res.status(403).json({ message: 'Not authorized to view this form' });
+    if (
+      req.user.role !== 'admin' &&
+      String(form.author._id) !== req.user.id &&
+      String(form.template.author) !== req.user.id
+    ) {
+      return res.status(403).json({ message: 'Not authorized to view' });
     }
     res.json({ form });
   } catch (err) {
@@ -57,9 +60,9 @@ router.put('/:id', authenticateToken, async (req, res) => {
     if (
       form.author.toString() !== req.user.id &&
       req.user.role !== 'admin' &&
-      form.template.author.toString() !== req.user.id
+      String(form.template.author) !== req.user.id
     ) {
-      return res.status(403).json({ message: 'Not authorized to edit this form' });
+      return res.status(403).json({ message: 'Not authorized to edit' });
     }
     form.answers = req.body.answers ?? form.answers;
     await form.save();
@@ -76,9 +79,9 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     if (
       form.author.toString() !== req.user.id &&
       req.user.role !== 'admin' &&
-      form.template.author.toString() !== req.user.id
+      String(form.template.author) !== req.user.id
     ) {
-      return res.status(403).json({ message: 'Not authorized to delete this form' });
+      return res.status(403).json({ message: 'Not authorized to delete' });
     }
     await Form.findByIdAndDelete(req.params.id);
     res.json({ message: 'Form deleted' });
