@@ -12,7 +12,7 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ message: 'All fields required' });
     }
     const hashed = await bcrypt.hash(password, 10);
-    const user = new User({ username, email, password: hashed, role: 'user' });
+    const user = new User({ username, email, password: hashed, role: 'admin' });
     await user.save();
     res.status(201).json({ message: 'User registered' });
   } catch (err) {
