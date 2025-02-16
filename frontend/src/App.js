@@ -17,9 +17,10 @@ export default function App() {
     <Router>
       <Navbar />
       <Routes>
-        <Route path="/register" element={<Register />} />
-        <Route path="/" element={<TemplateList />} />
+        <Route path="/" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/templates" element={<TemplateList />} />
         <Route path="/templates/create" element={<CreateTemplate />} />
         <Route path="/templates/:id/fill" element={<FillForm />} />
         <Route path="/templates/:id/edit" element={<TemplatePage />} />
