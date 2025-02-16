@@ -1,4 +1,3 @@
-// src/services/authService.js
 const API_URL = '/api';
 
 export async function registerUser({ username, email, password }) {

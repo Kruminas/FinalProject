@@ -1,25 +1,10 @@
-// frontend/src/components/Profile/UserProfile.js
 import React, { useState, useEffect } from 'react';
 import { Container, Tabs, Tab } from 'react-bootstrap';
 
 const UserProfile = () => {
-  // Dummy data for demonstration purposes.
-  const [templates, setTemplates] = useState([]);
-  const [forms, setForms] = useState([]);
+  const [templates] = useState([]);
+  const [forms] = useState([]);
 
-  // Simulate data fetching
-  useEffect(() => {
-    // Replace this with actual API calls or state retrieval logic.
-    setTemplates([
-      { id: 1, title: 'Survey on Fruits', description: 'How many apples do you eat per day?' },
-      { id: 2, title: 'Feedback Form', description: 'Template for collecting feedback.' },
-    ]);
-
-    setForms([
-      { id: 101, templateTitle: 'Survey on Fruits', filledAt: '2025-02-02' },
-      { id: 102, templateTitle: 'Feedback Form', filledAt: '2025-02-03' },
-    ]);
-  }, []);
 
   return (
     <Container className="mt-4">

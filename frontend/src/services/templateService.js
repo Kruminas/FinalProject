@@ -1,4 +1,3 @@
-// src/services/templateService.js
 import { getToken } from './authService';
 const API_URL = '/api';
 

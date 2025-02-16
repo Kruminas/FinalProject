@@ -1,4 +1,3 @@
-// src/components/Search/SearchBar.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,7 +7,6 @@ function SearchBar() {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    // For example, navigate to /search?query=someText
     navigate(`/search?query=${encodeURIComponent(query)}`);
   };
 
