@@ -70,4 +70,21 @@ router.delete('/:id', authenticateToken, async (req, res) => {
   }
 });
 
+router.get('/search', async (req, res) => {
+  try {
+    const q = req.query.q || '';
+    const regex = new RegExp(q, 'i');
+    const templates = await Template.find({
+      $or: [
+        { title: { $regex: regex } },
+        { description: { $regex: regex } },
+        { 'questions.questionText': { $regex: regex } }
+      ]
+    });
+    res.json({ templates });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;
