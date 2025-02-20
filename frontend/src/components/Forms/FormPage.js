@@ -24,6 +24,12 @@ export default function FormPage() {
     })();
   }, [id, token]);
 
+  const getQuestionText = (questionId) => {
+    if (!formData?.template?.questions) return '';
+    const found = formData.template.questions.find((q) => String(q._id) === String(questionId));
+    return found ? found.questionText : '';
+  };
+
   if (!formData) {
     return <Container className="mt-4">Loading form...</Container>;
   }
@@ -32,23 +38,23 @@ export default function FormPage() {
     <Container className="mt-4">
       <Card>
         <Card.Body>
-          {/* <Card.Title>Form ID: {formData._id}</Card.Title> */}
+          <Card.Title>User: {formData.author?.email}</Card.Title>
           <Card.Subtitle className="mb-2 text-muted">
-            User: {formData.author?.email || '(unknown)'}
-          </Card.Subtitle>
-          <Card.Subtitle className="mb-2 text-muted">
-            Template: {formData.template?.title || '(no title)'}
+            Template: {formData.template?.title}
           </Card.Subtitle>
           <Card.Text as="div">
             <h6>Answers:</h6>
-            {formData.answers.map((ans, idx) => (
-              <div key={idx} className="border rounded p-2 mb-2">
-                <strong>Question ID:</strong> {ans.questionId}
-                <br />
-                <strong>Answer:</strong>{' '}
-                {Array.isArray(ans.answer) ? ans.answer.join(', ') : ans.answer}
-              </div>
-            ))}
+            {formData.answers.map((ans, idx) => {
+              const questionText = getQuestionText(ans.questionId);
+              return (
+                <div key={idx} className="border rounded p-2 mb-2">
+                  <strong>Question:</strong> {questionText}
+                  <br />
+                  <strong>Answer:</strong>{' '}
+                  {Array.isArray(ans.answer) ? ans.answer.join(', ') : ans.answer}
+                </div>
+              );
+            })}
           </Card.Text>
         </Card.Body>
       </Card>
