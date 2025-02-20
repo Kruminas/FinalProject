@@ -11,7 +11,7 @@ export default function UserManagement() {
       const res = await fetch(`${API_URL}/admin/users`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      if (!res.ok) throw new Error('Failed to fetch users');
+      if (!res.ok) throw new Error('Only admins can view content');
       const data = await res.json();
       setUsers(data.users || []);
     } catch (err) {
