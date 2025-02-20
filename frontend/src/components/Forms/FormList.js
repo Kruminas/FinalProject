@@ -13,7 +13,7 @@ export default function FormList() {
         const res = await fetch(`${API_URL}/forms`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        if (!res.ok) throw new Error('Failed to fetch forms (admin only)');
+        if (!res.ok) throw new Error('Only admins can view content');
         const data = await res.json();
         setForms(data.forms || []);
       } catch (err) {
