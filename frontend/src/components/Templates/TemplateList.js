@@ -33,7 +33,7 @@ export default function TemplateList() {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
-      if (!res.ok) throw new Error('Failed to delete template');
+      if (!res.ok) throw new Error('Only admin or author can delete template');
       alert('Template deleted');
       fetchTemplates();
     } catch (err) {
@@ -92,9 +92,7 @@ export default function TemplateList() {
                 <h4>{tpl.title}</h4>
                 <p>{tpl.description}</p>
                 <p>Likes: {tpl.likes?.length || 0}</p>
-                {token ? (
-              <button className="btn btn-outline-primary btn-sm me-2" onClick={() => handleLike(tpl._id)}>👍</button>
-            ) : null}
+                
               </div>
               <small className="text-muted">
                 Created by {tpl.author?.email || '(unknown)'}
@@ -120,6 +118,9 @@ export default function TemplateList() {
                 >
                   Delete
                 </button>
+                {token ? (
+              <button className="btn btn-outline-primary btn-sm me-2" onClick={() => handleLike(tpl._id)}>👍</button>
+            ) : null}
               </>
             ) : (
               <p>(Log in for more actions)</p>
