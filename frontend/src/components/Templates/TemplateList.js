@@ -119,7 +119,7 @@ export default function TemplateList() {
                   Delete
                 </button>
                 {token ? (
-              <button className="btn btn-primary btn-sm me-2 pl-2" onClick={() => handleLike(tpl._id)}>Like👍</button>
+              <button className="btn btn-primary btn-sm me-2" onClick={() => handleLike(tpl._id)}>Like👍</button>
             ) : null}
               </>
             ) : (
