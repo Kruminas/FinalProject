@@ -92,7 +92,6 @@ export default function TemplateList() {
                 <h4>{tpl.title}</h4>
                 <p>{tpl.description}</p>
                 <p>Likes: {tpl.likes?.length || 0}</p>
-                
               </div>
               <small className="text-muted">
                 Created by {tpl.author?.email || '(unknown)'}
@@ -118,9 +117,12 @@ export default function TemplateList() {
                 >
                   Delete
                 </button>
-                {token ? (
-              <button className="btn btn-primary btn-sm me-2" onClick={() => handleLike(tpl._id)}>Like👍</button>
-            ) : null}
+                <button
+                  className="btn btn-primary btn-sm ms-2"
+                  onClick={() => handleLike(tpl._id)}
+                >
+                  Like 👍
+                </button>
               </>
             ) : (
               <p>(Log in for more actions)</p>
