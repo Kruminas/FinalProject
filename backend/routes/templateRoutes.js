@@ -95,4 +95,24 @@ router.delete('/:id', authenticateToken, async (req, res) => {
   }
 });
 
+router.post('/:id/like', authenticateToken, async (req, res) => {
+  try {
+    const template = await Template.findById(req.params.id);
+    if (!template) return res.status(404).json({ message: 'Template not found' });
+
+    const userId = req.user.id;
+    const index = template.likes.indexOf(userId);
+    if (index === -1) {
+      template.likes.push(userId);
+    } else {
+      template.likes.splice(index, 1);
+    }
+
+    await template.save();
+    res.json({ likesCount: template.likes.length, template });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

@@ -49,6 +49,31 @@ export default function TemplateList() {
     navigate(`/templates/${templateId}/edit`);
   };
 
+  const handleLike = async (templateId) => {
+    if (!token) {
+      alert('Please log in to like a template.');
+      return;
+    }
+    try {
+      const res = await fetch(`${API_URL}/templates/${templateId}/like`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || data.message || 'Failed to like template');
+      }
+      const result = await res.json();
+      setTemplates((prev) =>
+        prev.map((tpl) =>
+          tpl._id === templateId ? { ...tpl, likes: result.template.likes } : tpl
+        )
+      );
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
   return (
     <div className="container mt-4">
       <h2>Templates</h2>
@@ -66,6 +91,10 @@ export default function TemplateList() {
               <div>
                 <h4>{tpl.title}</h4>
                 <p>{tpl.description}</p>
+                <p>Likes: {tpl.likes?.length || 0}</p>
+                {token ? (
+              <button className="btn btn-outline-primary btn-sm me-2" onClick={() => handleLike(tpl._id)}>👍</button>
+            ) : null}
               </div>
               <small className="text-muted">
                 Created by {tpl.author?.email || '(unknown)'}
