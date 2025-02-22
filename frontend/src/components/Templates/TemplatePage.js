@@ -84,7 +84,7 @@ export default function TemplatePage() {
         },
         body: JSON.stringify({ title, description, questions })
       });
-      if (!res.ok) throw new Error('Failed to update template');
+      if (!res.ok) throw new Error('Only admin or author can update template');
       alert('Template updated');
       navigate('/');
     } catch (err) {
