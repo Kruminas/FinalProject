@@ -8,6 +8,10 @@ export default function TemplateList() {
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
 
+  useEffect(() => {
+    fetchTemplates();
+  }, []);
+
   const fetchTemplates = async () => {
     try {
       const res = await fetch(`${API_URL}/templates`);
@@ -19,19 +23,15 @@ export default function TemplateList() {
     }
   };
 
-  useEffect(() => {
-    fetchTemplates();
-  }, []);
-
   const handleDelete = async (templateId) => {
+    if (!token) {
+      alert('You must be logged in');
+      return;
+    }
     try {
-      if (!token) {
-        alert('You must be logged in');
-        return;
-      }
       const res = await fetch(`${API_URL}/templates/${templateId}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error('Only admin or author can delete template');
       alert('Template deleted');
@@ -57,7 +57,7 @@ export default function TemplateList() {
     try {
       const res = await fetch(`${API_URL}/templates/${templateId}/like`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) {
         const data = await res.json();
@@ -101,6 +101,7 @@ export default function TemplateList() {
                 Created by {tpl.author?.email || '(unknown)'}
               </small>
             </div>
+
             {token ? (
               <>
                 <Link
@@ -129,14 +130,16 @@ export default function TemplateList() {
                 </button>
               </>
             ) : (
-              <p>(Log in for more actions)</p>
+              <>
+                <p className="text-muted">(Log in for more actions)</p>
+                <button
+                  className="btn btn-outline-info btn-sm"
+                  onClick={() => handleReadOnly(tpl._id)}
+                >
+                  Read-Only View
+                </button>
+              </>
             )}
-             <button
-              className="btn btn-outline-info btn-sm"
-              onClick={() => handleReadOnly(tpl._id)}
-            >
-              Read-Only View
-            </button>
           </div>
         ))
       )}
