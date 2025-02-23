@@ -74,6 +74,10 @@ export default function TemplateList() {
     }
   };
 
+  const handleReadOnly = (templateId) => {
+    navigate(`/templates/${templateId}/readonly`);
+  };
+
   return (
     <div className="container mt-4">
       <h2>Templates</h2>
@@ -127,6 +131,12 @@ export default function TemplateList() {
             ) : (
               <p>(Log in for more actions)</p>
             )}
+             <button
+              className="btn btn-outline-info btn-sm"
+              onClick={() => handleReadOnly(tpl._id)}
+            >
+              Read-Only View
+            </button>
           </div>
         ))
       )}

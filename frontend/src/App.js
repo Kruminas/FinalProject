@@ -11,6 +11,7 @@ import SearchResults from './components/Search/SearchResults';
 import FormList from './components/Forms/FormList';
 import FormPage from './components/Forms/FormPage';
 import UserManagement from './components/Admin/UserManagement';
+import TemplateReadOnly from './components/Templates/TemplateReadOnly';
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/templates/create" element={<CreateTemplate />} />
         <Route path="/templates/:id/fill" element={<FillForm />} />
         <Route path="/templates/:id/edit" element={<TemplatePage />} />
+        <Route path="/templates/:id/readonly" element={<TemplateReadOnly />} />
         <Route path="/search" element={<SearchResults />} />
         <Route path="/forms" element={<FormList />} />
         <Route path="/forms/:id" element={<FormPage />} />
