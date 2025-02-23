@@ -56,7 +56,9 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    const template = await Template.findById(req.params.id).populate('author', 'email username');
+    const template = await Template.findById(req.params.id)
+      .populate('author', 'email username')
+      .populate('comments.author', 'email username');
     if (!template) return res.status(404).json({ message: 'Template not found' });
     res.json({ template });
   } catch (err) {
@@ -110,6 +112,28 @@ router.post('/:id/like', authenticateToken, async (req, res) => {
 
     await template.save();
     res.json({ likesCount: template.likes.length, template });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post('/:id/comment', authenticateToken, async (req, res) => {
+  try {
+    const { content } = req.body;
+    const template = await Template.findById(req.params.id);
+    if (!template) return res.status(404).json({ message: 'Template not found' });
+
+    template.comments.push({
+      author: req.user.id,
+      content
+    });
+
+    await template.save();
+    const updatedTemplate = await Template.findById(req.params.id)
+      .populate('author', 'email username')
+      .populate('comments.author', 'email username');
+
+    res.json({ template: updatedTemplate });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

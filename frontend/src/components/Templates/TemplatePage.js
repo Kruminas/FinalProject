@@ -5,19 +5,19 @@ const API_URL = '/api';
 
 export default function TemplatePage() {
   const { id } = useParams();
+  const token = localStorage.getItem('token');
+  const navigate = useNavigate();
+
   const [template, setTemplate] = useState(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [questions, setQuestions] = useState([]);
-  const token = localStorage.getItem('token');
-  const navigate = useNavigate();
+  const [comment, setComment] = useState(''); // new comment input
 
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`${API_URL}/templates/${id}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const res = await fetch(`${API_URL}/templates/${id}`);
         if (!res.ok) throw new Error('Failed to load template');
         const data = await res.json();
         setTemplate(data.template);
@@ -29,7 +29,7 @@ export default function TemplatePage() {
         navigate('/');
       }
     })();
-  }, [id, token, navigate]);
+  }, [id, navigate]);
 
   const addQuestion = () => {
     setQuestions([...questions, { questionText: '', type: 'text', options: [] }]);
@@ -75,6 +75,11 @@ export default function TemplatePage() {
   };
 
   const handleSave = async () => {
+
+    if (!token) {
+      alert('Login required to update template.');
+      return;
+    }
     try {
       const res = await fetch(`${API_URL}/templates/${id}`, {
         method: 'PUT',
@@ -87,6 +92,33 @@ export default function TemplatePage() {
       if (!res.ok) throw new Error('Only admin or author can update template');
       alert('Template updated');
       navigate('/');
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const handleAddComment = async (e) => {
+    e.preventDefault();
+    if (!token) {
+      alert('Please log in to comment.');
+      return;
+    }
+    try {
+      const res = await fetch(`${API_URL}/templates/${id}/comment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ content: comment })
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || data.message || 'Failed to add comment');
+      }
+      const updated = await res.json();
+      setTemplate(updated.template);
+      setComment('');
     } catch (err) {
       alert(err.message);
     }
@@ -159,7 +191,11 @@ export default function TemplatePage() {
                   </button>
                 </div>
               ))}
-              <button type="button" className="btn btn-secondary" onClick={() => addOption(idx)}>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => addOption(idx)}
+              >
                 Add Option
               </button>
             </div>
@@ -180,6 +216,36 @@ export default function TemplatePage() {
       <button className="btn btn-primary" onClick={handleSave}>
         Save Changes
       </button>
+
+      <hr />
+
+      <h4 className="mt-4">Comments</h4>
+      {!template.comments || template.comments.length === 0 ? (
+        <p>No comments yet.</p>
+      ) : (
+        template.comments.map((c, idx) => (
+          <div key={idx} className="border p-2 mb-2">
+            <strong>{c.author?.email || 'Unknown user'}:</strong> {c.content}
+          </div>
+        ))
+      )}
+
+      {token ? (
+        <form onSubmit={handleAddComment}>
+          <div className="mb-3">
+            <label>Add a comment</label>
+            <textarea
+              className="form-control"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              required
+            />
+          </div>
+          <button className="btn btn-secondary">Submit Comment</button>
+        </form>
+      ) : (
+        <p className="text-muted">Log in to add a comment.</p>
+      )}
     </div>
   );
 }
