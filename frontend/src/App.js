@@ -12,6 +12,7 @@ import FormList from './components/Forms/FormList';
 import FormPage from './components/Forms/FormPage';
 import UserManagement from './components/Admin/UserManagement';
 import TemplateReadOnly from './components/Templates/TemplateReadOnly';
+import UserProfile from './components/Profile/UserProfile';
 
 export default function App() {
   return (
@@ -29,6 +30,7 @@ export default function App() {
         <Route path="/forms" element={<FormList />} />
         <Route path="/forms/:id" element={<FormPage />} />
         <Route path="/admin/users" element={<UserManagement />} />
+        <Route path="/profile" element={<UserProfile />} />
       </Routes>
     </Router>
   );
