@@ -7,9 +7,9 @@ async function getSalesforceToken() {
   const tokenUrl = 'https://login.salesforce.com/services/oauth2/token';
   const params = new URLSearchParams();
   params.append('grant_type', 'password');
-  params.append('client_id', '3MVG9PwZx9R6_UrcKYlyiu2MkjBqKr0JGmvk0X1vQgJxhrZq_tks_em2IIROyEBB3RD0nHFdVJVOFu2Qk3b1l');
-  params.append('client_secret', '98FF6C42C5689CB517D34E94A7C29C9A8D0868FD00F524D3654CB64526C90B0F');
-  params.append('username', 'dominykas.kruminas@gmail.com');
+  params.append('client_id', procces.env.SF_CONSUMER_KEY);
+  params.append('client_secret', procces.env.SF_CONSUMER_SECRET);
+  params.append('username', process.env.SF_USERNAME);
   params.append('password', process.env.SF_PASSWORD);
 
   try {
