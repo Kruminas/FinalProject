@@ -27,10 +27,19 @@ async function getSalesforceToken() {
 
 router.post('/create', async (req, res) => {
   try {
-    const { sfAccountName, sfContactName, sfContactEmail } = req.body;
+    // const { sfAccountName, sfContactName, sfContactEmail } = req.body;
     const tokenData = await getSalesforceToken();
     const accessToken = tokenData.accessToken;
     const instanceUrl = tokenData.instanceUrl; 
+    console.log("DEBUG SALESFORCE CREDS:", {
+      SF_CONSUMER_KEY: process.env.SF_CONSUMER_KEY,
+      SF_CONSUMER_SECRET: process.env.SF_CONSUMER_SECRET,
+      SF_USERNAME: process.env.SF_USERNAME,
+      SF_PASSWORD: process.env.SF_PASSWORD ? 'HIDDEN_' + process.env.SF_PASSWORD.length + '_CHARS' : 'NOT SET',
+    });
+
+    const { sfAccountName, sfContactName, sfContactEmail } = req.body;
+    console.log("DEBUG SF DATA FROM FRONTEND:", { sfAccountName, sfContactName, sfContactEmail });
 
     const accountResp = await axios.post(
       `${instanceUrl}/services/data/v57.0/sobjects/Account`,
