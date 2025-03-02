@@ -6,26 +6,46 @@ export default function UserProfile() {
   const [templates, setTemplates] = useState([]);
   const [forms, setForms] = useState([]);
   const [liked, setLiked] = useState([]);
+  const [sfAccountName, setSfAccountName] = useState('');
+  const [sfContactName, setSfContactName] = useState('');
+  const [sfContactEmail, setSfContactEmail] = useState('');
+  const [showSfForm, setShowSfForm] = useState(false);
   const token = localStorage.getItem('token');
 
   useEffect(() => {
     if (!token) return;
     (async () => {
       try {
-        const res = await fetch('/api/user/profile', {
+        const r = await fetch('/api/user/profile', {
           headers: { Authorization: `Bearer ${token}` }
         });
-        if (!res.ok) throw new Error('Could not load profile');
-        const data = await res.json();
-        setUser(data.user);
-        setTemplates(data.templates);
-        setForms(data.forms);
-        setLiked(data.liked);
-      } catch (err) {
-        console.error(err);
-      }
+        if (!r.ok) throw new Error('Profile error');
+        const d = await r.json();
+        setUser(d.user);
+        setTemplates(d.templates);
+        setForms(d.forms);
+        setLiked(d.liked);
+      } catch {}
     })();
   }, [token]);
+
+  const handleCreateSF = async (e) => {
+    e.preventDefault();
+    if (!token) return;
+    try {
+      const r = await fetch('/api/salesforce/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ sfAccountName, sfContactName, sfContactEmail })
+      });
+      if (!r.ok) throw new Error('SF error');
+      alert('Created in Salesforce');
+      setShowSfForm(false);
+    } catch {}
+  };
 
   return (
     <Container className="mt-4">
@@ -56,7 +76,7 @@ export default function UserProfile() {
             forms.map((frm) => (
               <div key={frm._id} className="mb-3">
                 <h4>Template: {frm.template?.title}</h4>
-                <p>Submitted on: {new Date(frm.createdAt).toLocaleString()}</p>
+                <p>Submitted: {new Date(frm.createdAt).toLocaleString()}</p>
               </div>
             ))
           )}
@@ -74,6 +94,46 @@ export default function UserProfile() {
           )}
         </Tab>
       </Tabs>
+      {token && (
+        <>
+          <button onClick={() => setShowSfForm(!showSfForm)}>
+            {showSfForm ? 'Hide SF Form' : 'Show SF Form'}
+          </button>
+          {showSfForm && (
+            <form onSubmit={handleCreateSF} className="mt-3">
+              <div className="mb-2">
+                <label>SF Account Name</label>
+                <input
+                  className="form-control"
+                  value={sfAccountName}
+                  onChange={(e) => setSfAccountName(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="mb-2">
+                <label>SF Contact Name</label>
+                <input
+                  className="form-control"
+                  value={sfContactName}
+                  onChange={(e) => setSfContactName(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="mb-2">
+                <label>SF Contact Email</label>
+                <input
+                  className="form-control"
+                  type="email"
+                  value={sfContactEmail}
+                  onChange={(e) => setSfContactEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <button className="btn btn-info">Create in SF</button>
+            </form>
+          )}
+        </>
+      )}
     </Container>
   );
-} 
+}
