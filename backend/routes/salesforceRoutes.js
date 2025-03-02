@@ -4,17 +4,18 @@ const authenticateToken = require('../middlewares/authMiddleware');
 const axios = require('axios');
 
 async function getSalesforceToken() {
-    const tokenUrl = 'https://login.salesforce.com/services/oauth2/token';
-    const params = new URLSearchParams();
-    params.append('grant_type', 'password');
-    params.append('client_id', process.env.SF_CONSUMER_KEY);
-    params.append('client_secret', process.env.SF_CONSUMER_SECRET);
-    params.append('username', process.env.SF_USERNAME);
-    params.append('password', process.env.SF_PASSWORD);
+  const tokenUrl = 'https://login.salesforce.com/services/oauth2/token';
+  const params = new URLSearchParams();
+  params.append('grant_type', 'password');
+  params.append('client_id', '3MVG9PwZx9R6_UrcKYlyiu2MkjBqKr0JGmvk0X1vQgJxhrZq_tks_em2IIROyEBB3RD0nHFdVJVOFu2Qk3b1l');
+  params.append('client_secret', '98FF6C42C5689CB517D34E94A7C29C9A8D0868FD00F524D3654CB64526C90B0F');
+  params.append('username', 'dominykas.kruminas@gmail.com');
+  params.append('password', process.env.SF_PASSWORD);
 
   try {
     const response = await axios.post(tokenUrl, params);
-    return response.data.access_token;
+    console.log('Salesforce token response:', response.data);
+    return { accessToken: response.data.access_token, instanceUrl: response.data.instance_url };
   } catch (error) {
     console.error('Error obtaining Salesforce token:', error.response?.data || error.message);
     throw error;
@@ -24,8 +25,9 @@ async function getSalesforceToken() {
 router.post('/create', authenticateToken, async (req, res) => {
   try {
     const { sfAccountName, sfContactName, sfContactEmail } = req.body;
-    const accessToken = await getSalesforceToken();
-    const instanceUrl = `https://itransition-2a-dev-ed.develop.lightning.force.com/`;
+    const tokenData = await getSalesforceToken();
+    const accessToken = tokenData.accessToken;
+    const instanceUrl = tokenData.instanceUrl; 
 
     const accountResp = await axios.post(
       `${instanceUrl}/services/data/v57.0/sobjects/Account`,
@@ -33,11 +35,13 @@ router.post('/create', authenticateToken, async (req, res) => {
       { headers: { Authorization: `Bearer ${accessToken}` } }
     );
     const accountId = accountResp.data.id;
+
     const contactResp = await axios.post(
       `${instanceUrl}/services/data/v57.0/sobjects/Contact`,
       { LastName: sfContactName, Email: sfContactEmail, AccountId: accountId },
       { headers: { Authorization: `Bearer ${accessToken}` } }
     );
+
     res.json({ accountId, contactId: contactResp.data.id });
   } catch (err) {
     console.error('Salesforce integration error:', err.response?.data || err.message);
