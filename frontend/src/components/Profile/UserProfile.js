@@ -45,13 +45,27 @@ export default function UserProfile() {
         },
         body: JSON.stringify({ sfAccountName, sfContactName, sfContactEmail })
       });
-      if (!res.ok) throw new Error('Failed to send info to Salesforce');
+  
+      if (!res.ok) {
+        let errorMessage = 'Failed to send info to Salesforce';
+        try {
+          const errorData = await res.json();
+          if (errorData && errorData.error) {
+            errorMessage += `: ${JSON.stringify(errorData.error)}`;
+          }
+        } catch (parseErr) {
+          console.error('Could not parse JSON error:', parseErr);
+        }
+        throw new Error(errorMessage);
+      }
+  
       alert('Information sent to Salesforce successfully');
       setShowSfForm(false);
     } catch (err) {
       alert(err.message);
     }
   };
+  
 
   return (
     <Container className="mt-4">
