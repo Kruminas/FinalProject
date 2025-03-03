@@ -35,7 +35,7 @@ router.post('/create', async (req, res) => {
     const { accountName } = req.body;
 
     const accountResp = await axios.post(
-      `${instanceUrl}/services/data/v57.0/sobjects/Account`,
+      `${instanceUrl}/services/data/v63.0/sobjects/Account`,
       { Name: accountName },
       {
         headers: {
