@@ -5,7 +5,7 @@ const axios = require('axios');
 
 async function getSalesforceToken() {
 
-  const tokenUrl = 'https://intern5-dev-ed.develop.my.salesforce.com '; 
+  const tokenUrl = 'https://intern5-dev-ed.develop.my.salesforce.com/services/oauth2/token'; 
 
   const params = new URLSearchParams();
   params.append('grant_type', 'password');
