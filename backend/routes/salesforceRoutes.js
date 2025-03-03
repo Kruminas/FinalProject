@@ -13,7 +13,7 @@ async function getSalesforceToken() {
   params.append('client_secret', process.env.SF_CONSUMER_SECRET);
   params.append('username', process.env.SF_USERNAME);
   params.append('password', process.env.SF_PASSWORD);
-
+  const INSTANCE_URL = 'https://intern5-dev-ed.develop.my.salesforce.com';
   try {
     const response = await axios.post(tokenUrl, params);
     return {
