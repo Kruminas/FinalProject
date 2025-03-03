@@ -4,11 +4,11 @@ const axios = require('axios');
 
 // Hardcode your known instance URL
 // (This is okay for a quick test but not for production)
-const INSTANCE_URL = 'https://intern5-dev-ed.develop.my.salesforce.com';
+const INSTANCE_URL = process.env.INSTANCE_URL;
 
 // Also, you’ll need a valid access token. Hardcoded tokens expire quickly, 
 // but this might help you test the endpoint for now:
-const ACCESS_TOKEN = '00DWU00000JYaxP!AQEAQLmi3FKOMl2zSqB_rpwvVMClZmWrdLbiHFgsWiIH1mYjFAoOzLOJSPqNBuWxxK6nkIWnjH3elrsJuVjEn64opkxFRH2U'; // The token you got from Postman/cURL
+const ACCESS_TOKEN = process.env.ACCESS_TOKEN; // The token you got from Postman/cURL
 
 router.post('/create', async (req, res) => {
   try {
