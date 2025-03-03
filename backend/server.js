@@ -5,8 +5,6 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const salesforceRoutes = require('./routes/salesforceRoutes');
-
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
