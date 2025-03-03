@@ -12,12 +12,10 @@ const ACCESS_TOKEN = '00DWU00000JYaxP!AQEAQLmi3FKOMl2zSqB_rpwvVMClZmWrdLbiHFgsWi
 
 router.post('/create', async (req, res) => {
   try {
-    const { accountName } = req.body;
-
-    // Use INSTANCE_URL directly
+    const { sfAccountName } = req.body; // instead of accountName
     const response = await axios.post(
       `${INSTANCE_URL}/services/data/v57.0/sobjects/Account`,
-      { Name: accountName },
+      { Name: sfAccountName },
       {
         headers: {
           Authorization: `Bearer ${ACCESS_TOKEN}`,
