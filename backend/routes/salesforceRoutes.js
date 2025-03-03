@@ -10,7 +10,7 @@ const INSTANCE_URL = 'https://intern5-dev-ed.develop.my.salesforce.com';
 // but this might help you test the endpoint for now:
 const ACCESS_TOKEN = '00DWU00000JYaxP!AQEAQLmi3FKOMl2zSqB_rpwvVMClZmWrdLbiHFgsWiIH1mYjFAoOzLOJSPqNBuWxxK6nkIWnjH3elrsJuVjEn64opkxFRH2U'; // The token you got from Postman/cURL
 
-router.post('/createAccount', async (req, res) => {
+router.post('/create', async (req, res) => {
   try {
     const { accountName } = req.body;
 
