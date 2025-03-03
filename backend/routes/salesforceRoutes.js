@@ -31,7 +31,6 @@ router.post('/create', async (req, res) => {
 
     const { sfAccountName, sfContactName, sfContactEmail } = req.body;
 
-
     const tokenData = await getSalesforceToken();
     const accessToken = tokenData.accessToken;
     const instanceUrl = tokenData.instanceUrl; 
