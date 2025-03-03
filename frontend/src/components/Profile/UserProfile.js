@@ -66,7 +66,6 @@ export default function UserProfile() {
     }
   };
   
-
   return (
     <Container className="mt-4">
       <h2>User Profile</h2>
