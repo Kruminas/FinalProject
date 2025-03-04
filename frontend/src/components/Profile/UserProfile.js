@@ -9,8 +9,8 @@ export default function UserProfile() {
   const [liked, setLiked] = useState([]);
   const [sfAccountName, setSfAccountName] = useState('');
   const [sfParentAccount, setSfParentAccount] = useState('');
-  const [sfContackWebsite, setSfContackWebsite] = useState('');
-  const [sfContackPhone, setSfContackPhone] = useState ('')
+  const [sfContactWebsite, setSfContactWebsite] = useState('');
+  const [sfContactPhone, setSfContactPhone] = useState ('')
   const [sfContactEmail, setSfContactEmail] = useState('');
   const [showSfForm, setShowSfForm] = useState(false);
   const token = localStorage.getItem('token');
