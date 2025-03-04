@@ -20,7 +20,7 @@ const formRoutes = require('./routes/formRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const userRoutes = require('./routes/userRoutes');
 const salesforceRoutes = require('./routes/salesforceRoutes');
-const salesforceRoutes = require('./routes/jiraRoutes');
+const jiraRoutes = require('./routes/jiraRoutes');
 
 
 app.use('/api/auth', authRoutes);
