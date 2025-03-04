@@ -34,7 +34,7 @@ router.post('/ticket', async (req, res) => {
     };
 
     const response = await axios.post(
-      `https://${JIRA_DOMAIN}/rest/api/3/issue`,
+      `https://${process.env.JIRA_DOMAIN}/rest/api/3/issue`,
       issueData,
       { headers: jiraAuthHeader }
     );
