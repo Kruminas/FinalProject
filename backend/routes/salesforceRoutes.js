@@ -8,11 +8,13 @@ const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 router.post('/create', async (req, res) => {
   try {
     const { sfAccountName } = req.body;
+    const { sfContactWebsite } = req.body;
+    const { sfContactPhone } = req.body;
     const response = await axios.post(
       `${INSTANCE_URL}/services/data/v57.0/sobjects/Account`,
       { Name: sfAccountName },
-      { Website: sfContackWebsite },
-      { Phone: sfContackPhone },
+      { Website: sfContactWebsite },
+      { Phone: sfContactPhone },
       {
         headers: {
           Authorization: `Bearer ${ACCESS_TOKEN}`,
