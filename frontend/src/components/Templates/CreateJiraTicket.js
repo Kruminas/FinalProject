@@ -15,8 +15,7 @@ export default function CreateJiraTicket() {
         body: JSON.stringify({
           summary,
           description,
-          link: window.location.href,
-          reporterEmail: 'user@example.com'
+          link: window.location.href
         })
       });
       const data = await res.json();
@@ -34,8 +33,13 @@ export default function CreateJiraTicket() {
   return (
     <div style={{ padding: 20 }}>
       <h1>Create Jira Ticket</h1>
-      {ticketUrl && <p>Created: <a href={ticketUrl}>{ticketUrl}</a></p>}
+      {ticketUrl && (
+        <p>
+          Created: <a href={ticketUrl}>{ticketUrl}</a>
+        </p>
+      )}
       {error && <p style={{ color: 'red' }}>{error}</p>}
+
       <form onSubmit={handleSubmit}>
         <div>
           <label>Summary</label>
