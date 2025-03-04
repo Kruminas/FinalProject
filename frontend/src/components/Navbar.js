@@ -56,6 +56,10 @@ export default function Navbar() {
               Profile
             </Link>
 
+            <Link to="/create-jira-ticket" className="nav-item nav-link">\
+            Help
+            </Link>
+
             <button className="btn btn-link nav-item nav-link" onClick={handleLogout}>
               Logout
             </button>

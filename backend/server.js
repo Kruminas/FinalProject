@@ -27,6 +27,7 @@ app.use('/api/forms', formRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/salesforce', salesforceRoutes);
+app.use('/api/jira', jiraRouter);
 
 app.use(express.static(path.join(__dirname, 'build')));
 app.get('*', (req, res) => {

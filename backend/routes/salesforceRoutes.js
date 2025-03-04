@@ -7,15 +7,10 @@ const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 
 router.post('/create', async (req, res) => {
   try {
-
     const { sfAccountName, sfContactWebsite, sfContactPhone } = req.body;
-
-
-
     const accountData = {
       Name: sfAccountName
     };
-
 
     if (sfContactWebsite) accountData.Website = sfContactWebsite;
     if (sfContactPhone) accountData.Phone = sfContactPhone;
