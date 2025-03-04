@@ -1,13 +1,9 @@
-require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
+const router = express.Router();
 const axios = require('axios');
+require('dotenv').config();
 
-const app = express();
-app.use(express.json());
-app.use(cors());
-
-app.post('/api/jira/ticket', async (req, res) => {
+router.post('/ticket', async (req, res) => {
   try {
     const {
       JIRA_DOMAIN,
@@ -24,6 +20,7 @@ app.post('/api/jira/ticket', async (req, res) => {
       'Content-Type': 'application/json',
       Accept: 'application/json'
     };
+
     const issueData = {
       fields: {
         project: { key: JIRA_PROJECT_KEY },
@@ -53,4 +50,4 @@ app.post('/api/jira/ticket', async (req, res) => {
   }
 });
 
-app.listen(5000, () => {});
+module.exports = router;
