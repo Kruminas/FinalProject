@@ -11,6 +11,8 @@ router.post('/create', async (req, res) => {
     const response = await axios.post(
       `${INSTANCE_URL}/services/data/v57.0/sobjects/Account`,
       { Name: sfAccountName },
+      { Website: sfContackWebsite },
+      { Phone: sfContackPhone },
       {
         headers: {
           Authorization: `Bearer ${ACCESS_TOKEN}`,

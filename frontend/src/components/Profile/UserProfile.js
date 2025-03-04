@@ -8,7 +8,9 @@ export default function UserProfile() {
   const [forms, setForms] = useState([]);
   const [liked, setLiked] = useState([]);
   const [sfAccountName, setSfAccountName] = useState('');
-  const [sfParentAccount, setsfParentAccount] = useState('');
+  const [sfParentAccount, setSfParentAccount] = useState('');
+  const [sfContackWebsite, setSfContackWebsite] = useState('');
+  const [sfContackPhone, setSfContackPhone] = useState ('')
   const [sfContactEmail, setSfContactEmail] = useState('');
   const [showSfForm, setShowSfForm] = useState(false);
   const token = localStorage.getItem('token');
@@ -43,7 +45,7 @@ export default function UserProfile() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({ sfAccountName, sfParentAccount, sfContactEmail })
+        body: JSON.stringify({ sfAccountName, sfParentAccount, sfContactEmail, sfContackWebsite, sfContackPhone })
       });
   
       if (!res.ok) {
@@ -90,11 +92,11 @@ export default function UserProfile() {
             />
           </div>
           <div className="mb-2">
-            <label>SF Contact Name</label>
+            <label>SF Parent Account</label>
             <input
               className="form-control"
               value={sfParentAccount}
-              onChange={(e) => setsfParentAccount(e.target.value)}
+              onChange={(e) => setSfParentAccount(e.target.value)}
               required
             />
           </div>
@@ -105,6 +107,26 @@ export default function UserProfile() {
               type="email"
               value={sfContactEmail}
               onChange={(e) => setSfContactEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-2">
+            <label>SF Contact Website</label>
+            <input
+              className="form-control"
+              type="website"
+              value={sfContactWebsite}
+              onChange={(e) => setSfContactWebsite(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-2">
+            <label>SF Contact Phone</label>
+            <input
+              className="form-control"
+              type="phone"
+              value={sfContactPhone}
+              onChange={(e) => setSfContactPhone(e.target.value)}
               required
             />
           </div>
