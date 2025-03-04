@@ -9,12 +9,12 @@ export default function UserProfile() {
   const [liked, setLiked] = useState([]);
   const [sfAccountName, setSfAccountName] = useState('');
   const [sfParentAccount, setSfParentAccount] = useState('');
-  const [sfContactWebsite, setSfContactWebsite] = useState('');
-  const [sfContactPhone, setSfContactPhone] = useState ('')
+  // const [sfContactWebsite, setSfContactWebsite] = useState('');
+  // const [sfContactPhone, setSfContactPhone] = useState ('')
   const [sfContactEmail, setSfContactEmail] = useState('');
   const [showSfForm, setShowSfForm] = useState(false);
   const token = localStorage.getItem('token');
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
     if (!token) return;
@@ -45,7 +45,7 @@ export default function UserProfile() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({ sfAccountName, sfParentAccount}) // sfContactEmail, sfContactWebsite, sfContactPhone 
+        body: JSON.stringify({ sfAccountName, sfParentAccount, sfContactEmail}) //  sfContactWebsite, sfContactPhone 
       });
   
       if (!res.ok) {
@@ -100,7 +100,7 @@ export default function UserProfile() {
               required
             />
           </div>
-          {/* <div className="mb-2">
+          <div className="mb-2">
             <label>SF Contact Email</label>
             <input
               className="form-control"
@@ -110,7 +110,7 @@ export default function UserProfile() {
               required
             />
           </div>
-          <div className="mb-2">
+          {/* <div className="mb-2">
             <label>SF Contact Website</label>
             <input
               className="form-control"
