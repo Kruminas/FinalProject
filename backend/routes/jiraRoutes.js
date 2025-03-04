@@ -1,7 +1,7 @@
+require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const axios = require('axios');
-
-const router = express.Router();
 
 const {
   JIRA_DOMAIN,
@@ -10,69 +10,32 @@ const {
   JIRA_PROJECT_KEY
 } = process.env;
 
-const jiraAuthHeader = {
-  Authorization: `Basic ${Buffer.from(
-    `${JIRA_USER_EMAIL}:${JIRA_API_TOKEN}`
-  ).toString('base64')}`,
-  'Content-Type': 'application/json',
-  Accept: 'application/json'
-};
+const app = express();
+app.use(express.json());
+app.use(cors());
 
-router.post('/ticket', async (req, res) => {
+app.post('/api/jira/ticket', async (req, res) => {
   try {
-    const { summary, description, priority, link, reporterEmail } = req.body;
-
+    const { summary, description, link, reporterEmail } = req.body;
+    const jiraAuth = {
+      Authorization: `Basic ${Buffer.from(`${JIRA_USER_EMAIL}:${JIRA_API_TOKEN}`).toString('base64')}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    };
     const issueData = {
       fields: {
         project: { key: JIRA_PROJECT_KEY },
         summary,
-        description: `${description}\n\nLink to original page: ${link}`,
-        issuetype: { name: 'Task' },
-        priority: { name: priority } 
-,
+        description: `${description}\n\nLink: ${link}`,
+        issuetype: { name: 'Task' }
       }
     };
-
-    const response = await axios.post(
-      `https://${process.env.JIRA_DOMAIN}/rest/api/3/issue`,
-      issueData,
-      { headers: jiraAuthHeader }
-    );
-
+    const response = await axios.post(`https://${JIRA_DOMAIN}/rest/api/3/issue`, issueData, { headers: jiraAuth });
     const { key } = response.data;
-    const issueUrl = `https://${JIRA_DOMAIN}/browse/${key}`;
-    res.status(200).json({
-      success: true,
-      key,
-      url: issueUrl
-    });
+    res.status(200).json({ success: true, key, url: `https://${JIRA_DOMAIN}/browse/${key}` });
   } catch (error) {
-    console.error('Error creating Jira issue:', error?.response?.data || error);
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: error?.response?.data || error.message });
   }
 });
 
-router.get('/my-issues', async (req, res) => {
-    const { email, startAt = 0, maxResults = 10 } = req.query;
-
-    const jql = `reporter = "${email}" ORDER BY created DESC`;
-  
-    try {
-      const searchUrl = `https://${JIRA_DOMAIN}/rest/api/3/search?jql=${encodeURIComponent(
-        jql
-      )}&startAt=${startAt}&maxResults=${maxResults}`;
-  
-      const response = await axios.get(searchUrl, { headers: jiraAuthHeader });
-  
-      res.status(200).json({
-        issues: response.data.issues,
-        total: response.data.total
-      });
-    } catch (error) {
-      console.error('Error fetching Jira issues:', error?.response?.data || error);
-      res.status(500).json({ success: false, error: error.message });
-    }
-  });
-  
-
-module.exports = router;
+app.listen(5000, () => {});

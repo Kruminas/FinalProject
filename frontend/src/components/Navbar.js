@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
 export default function Navbar() {
   const [query, setQuery] = useState('');
   const token = localStorage.getItem('token');
@@ -56,7 +55,7 @@ export default function Navbar() {
               Profile
             </Link>
 
-            <Link to="/create-jira-ticket" className="nav-item nav-link">\
+            <Link to="/create-jira-ticket" className="nav-item nav-link">
             Help
             </Link>
 
