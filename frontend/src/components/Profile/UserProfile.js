@@ -45,7 +45,7 @@ export default function UserProfile() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({ sfAccountName, sfParentAccount, sfContactEmail, sfContactWebsite, sfContactPhone })
+        body: JSON.stringify({ sfAccountName, sfParentAccount}) // sfContactEmail, sfContactWebsite, sfContactPhone 
       });
   
       if (!res.ok) {
@@ -100,7 +100,7 @@ export default function UserProfile() {
               required
             />
           </div>
-          <div className="mb-2">
+          {/* <div className="mb-2">
             <label>SF Contact Email</label>
             <input
               className="form-control"
@@ -129,7 +129,7 @@ export default function UserProfile() {
               onChange={(e) => setSfContactPhone(e.target.value)}
               required
             />
-          </div>
+          </div> */}
           <Button type="submit" variant="primary">Send to Salesforce</Button>
         </form>
       )}
