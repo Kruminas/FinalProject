@@ -3,7 +3,6 @@ const axios = require('axios');
 
 const router = express.Router();
 
-// Read environment variables
 const {
   JIRA_DOMAIN,
   JIRA_USER_EMAIL,
@@ -11,7 +10,6 @@ const {
   JIRA_PROJECT_KEY
 } = process.env;
 
-// Basic auth header for Jira
 const jiraAuthHeader = {
   Authorization: `Basic ${Buffer.from(
     `${JIRA_USER_EMAIL}:${JIRA_API_TOKEN}`
@@ -20,27 +18,18 @@ const jiraAuthHeader = {
   Accept: 'application/json'
 };
 
-// POST /api/jira/ticket
 router.post('/ticket', async (req, res) => {
   try {
-    // These fields come from the client (React) when a user wants to create a ticket
     const { summary, description, priority, link, reporterEmail } = req.body;
 
-    // (Optional) If you need to create a new Jira user first:
-    // 1. Check if the user exists
-    // 2. If not, create them
-    //    await createJiraUserIfNeeded(reporterEmail);
-
-    // Construct the payload for creating an issue
     const issueData = {
       fields: {
         project: { key: JIRA_PROJECT_KEY },
         summary,
         description: `${description}\n\nLink to original page: ${link}`,
-        issuetype: { name: 'Task' }, // or "Bug", "Story", etc.
-        priority: { name: priority } // "High", "Medium", "Low", etc.
-        // If you want to set the reporter explicitly:
-        // reporter: { emailAddress: reporterEmail },
+        issuetype: { name: 'Task' },
+        priority: { name: priority } 
+,
       }
     };
 
@@ -50,7 +39,6 @@ router.post('/ticket', async (req, res) => {
       { headers: jiraAuthHeader }
     );
 
-    // Jira returns the created issue data with a key like "HELP-123"
     const { key } = response.data;
     const issueUrl = `https://${JIRA_DOMAIN}/browse/${key}`;
     res.status(200).json({
@@ -64,12 +52,9 @@ router.post('/ticket', async (req, res) => {
   }
 });
 
-// GET /api/jira/my-issues?email=<reporterEmail>&startAt=0&maxResults=10
 router.get('/my-issues', async (req, res) => {
     const { email, startAt = 0, maxResults = 10 } = req.query;
-  
-    // JQL to find issues reported by a specific user, e.g. reporter = userEmail
-    // You can also filter statuses, etc.
+
     const jql = `reporter = "${email}" ORDER BY created DESC`;
   
     try {
