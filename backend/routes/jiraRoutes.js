@@ -1,7 +1,7 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
-require('dotenv').config();
 
 router.post('/ticket', async (req, res) => {
   try {
@@ -12,7 +12,7 @@ router.post('/ticket', async (req, res) => {
       JIRA_PROJECT_KEY
     } = process.env;
 
-    const { summary, description, link } = req.body;
+    const { summary, description, link, priority } = req.body;
     const jiraAuth = {
       Authorization: `Basic ${Buffer.from(
         `${JIRA_USER_EMAIL}:${JIRA_API_TOKEN}`
@@ -25,8 +25,23 @@ router.post('/ticket', async (req, res) => {
       fields: {
         project: { key: JIRA_PROJECT_KEY },
         summary,
-        description: `${description}\n\nLink: ${link}`,
-        issuetype: { name: 'Task' }
+        description: {
+          type: 'doc',
+          version: 1,
+          content: [
+            {
+              type: 'paragraph',
+              content: [
+                {
+                  text: `${description}\n\nLink: ${link}`,
+                  type: 'text'
+                }
+              ]
+            }
+          ]
+        },
+        issuetype: { name: 'Task' },
+        priority: { name: priority }
       }
     };
 
@@ -37,13 +52,13 @@ router.post('/ticket', async (req, res) => {
     );
 
     const { key } = response.data;
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       key,
       url: `https://${JIRA_DOMAIN}/browse/${key}`
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: error?.response?.data || error.message
     });
