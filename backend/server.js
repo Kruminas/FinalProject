@@ -20,6 +20,8 @@ const formRoutes = require('./routes/formRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const userRoutes = require('./routes/userRoutes');
 const salesforceRoutes = require('./routes/salesforceRoutes');
+const salesforceRoutes = require('./routes/jiraRoutes');
+
 
 app.use('/api/auth', authRoutes);
 app.use('/api/templates', templateRoutes);
@@ -27,7 +29,7 @@ app.use('/api/forms', formRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/salesforce', salesforceRoutes);
-app.use('/api/jira', jiraRouter);
+app.use('/api/jira', jiraRoutes);
 
 app.use(express.static(path.join(__dirname, 'build')));
 app.get('*', (req, res) => {
