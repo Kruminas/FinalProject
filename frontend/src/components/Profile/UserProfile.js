@@ -45,7 +45,7 @@ export default function UserProfile() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({ sfAccountName, sfParentAccount, sfContactEmail, sfContackWebsite, sfContackPhone })
+        body: JSON.stringify({ sfAccountName, sfParentAccount, sfContactEmail, sfContactWebsite, sfContactPhone })
       });
   
       if (!res.ok) {
