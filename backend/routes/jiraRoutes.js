@@ -3,22 +3,24 @@ const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
 
-const {
-  JIRA_DOMAIN,
-  JIRA_USER_EMAIL,
-  JIRA_API_TOKEN,
-  JIRA_PROJECT_KEY
-} = process.env;
-
 const app = express();
 app.use(express.json());
 app.use(cors());
 
 app.post('/api/jira/ticket', async (req, res) => {
   try {
-    const { summary, description, link, reporterEmail } = req.body;
+    const {
+      JIRA_DOMAIN,
+      JIRA_USER_EMAIL,
+      JIRA_API_TOKEN,
+      JIRA_PROJECT_KEY
+    } = process.env;
+
+    const { summary, description, link } = req.body;
     const jiraAuth = {
-      Authorization: `Basic ${Buffer.from(`${JIRA_USER_EMAIL}:${JIRA_API_TOKEN}`).toString('base64')}`,
+      Authorization: `Basic ${Buffer.from(
+        `${JIRA_USER_EMAIL}:${JIRA_API_TOKEN}`
+      ).toString('base64')}`,
       'Content-Type': 'application/json',
       Accept: 'application/json'
     };
@@ -30,11 +32,24 @@ app.post('/api/jira/ticket', async (req, res) => {
         issuetype: { name: 'Task' }
       }
     };
-    const response = await axios.post(`https://${JIRA_DOMAIN}/rest/api/3/issue`, issueData, { headers: jiraAuth });
+
+    const response = await axios.post(
+      `https://${JIRA_DOMAIN}/rest/api/3/issue`,
+      issueData,
+      { headers: jiraAuth }
+    );
+
     const { key } = response.data;
-    res.status(200).json({ success: true, key, url: `https://${JIRA_DOMAIN}/browse/${key}` });
+    res.status(200).json({
+      success: true,
+      key,
+      url: `https://${JIRA_DOMAIN}/browse/${key}`
+    });
   } catch (error) {
-    res.status(500).json({ success: false, error: error?.response?.data || error.message });
+    res.status(500).json({
+      success: false,
+      error: error?.response?.data || error.message
+    });
   }
 });
 
