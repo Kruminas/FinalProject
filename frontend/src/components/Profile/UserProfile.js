@@ -7,13 +7,17 @@ export default function UserProfile() {
   const [templates, setTemplates] = useState([]);
   const [forms, setForms] = useState([]);
   const [liked, setLiked] = useState([]);
+
+  // Fields for your Salesforce form
   const [sfAccountName, setSfAccountName] = useState('');
   const [sfParentAccount, setSfParentAccount] = useState('');
-  // const [sfContactWebsite, setSfContactWebsite] = useState('');
-  // const [sfContactPhone, setSfContactPhone] = useState ('')
+  const [sfContactWebsite, setSfContactWebsite] = useState('');
+  const [sfContactPhone, setSfContactPhone] = useState('');
   const [sfContactEmail, setSfContactEmail] = useState('');
+
   const [showSfForm, setShowSfForm] = useState(false);
   const token = localStorage.getItem('token');
+  // If not needed, we can remove the navigate
   // const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,13 +43,22 @@ export default function UserProfile() {
     e.preventDefault();
     if (!token) return;
     try {
+      // Include the fields you want to send
+      const bodyData = {
+        sfAccountName,
+        sfParentAccount,
+        sfContactEmail,
+        sfContactWebsite,
+        sfContactPhone
+      };
+
       const res = await fetch('/api/salesforce/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({ sfAccountName, sfParentAccount, sfContactEmail}) //  sfContactWebsite, sfContactPhone 
+        body: JSON.stringify(bodyData)
       });
   
       if (!res.ok) {
@@ -77,11 +90,15 @@ export default function UserProfile() {
           <p><strong>Email:</strong> {user.email}</p>
         </div>
       )}
+
       <Button variant="info" onClick={() => setShowSfForm(!showSfForm)}>
         {showSfForm ? 'Hide Salesforce Form' : 'Show Salesforce Form'}
       </Button>
+
       {showSfForm && (
         <form onSubmit={handleCreateSF} className="mt-3">
+
+          {/* Account Name */}
           <div className="mb-2">
             <label>SF Account Name</label>
             <input
@@ -91,15 +108,18 @@ export default function UserProfile() {
               required
             />
           </div>
+
+          {/* Parent Account (MUST be a valid Account Id in Salesforce if you want a Parent-Child relationship) */}
           <div className="mb-2">
             <label>SF Parent Account</label>
             <input
               className="form-control"
               value={sfParentAccount}
               onChange={(e) => setSfParentAccount(e.target.value)}
-              required
             />
           </div>
+
+          {/* Contact Email */}
           <div className="mb-2">
             <label>SF Contact Email</label>
             <input
@@ -107,32 +127,36 @@ export default function UserProfile() {
               type="email"
               value={sfContactEmail}
               onChange={(e) => setSfContactEmail(e.target.value)}
-              required
             />
           </div>
-          {/* <div className="mb-2">
+
+          {/* Contact Website */}
+          <div className="mb-2">
             <label>SF Contact Website</label>
             <input
               className="form-control"
-              type="website"
+              type="url"
               value={sfContactWebsite}
               onChange={(e) => setSfContactWebsite(e.target.value)}
-              required
             />
           </div>
+
+          {/* Contact Phone */}
           <div className="mb-2">
             <label>SF Contact Phone</label>
             <input
               className="form-control"
-              type="phone"
+              type="tel"
               value={sfContactPhone}
               onChange={(e) => setSfContactPhone(e.target.value)}
-              required
             />
-          </div> */}
+          </div>
+
           <Button type="submit" variant="primary">Send to Salesforce</Button>
         </form>
       )}
+
+      {/* Tabs for Templates, Forms, Liked, etc. */}
       <Tabs defaultActiveKey="templates" id="user-profile-tabs" className="mb-3">
         <Tab eventKey="templates" title="My Templates">
           {templates.length === 0 ? (
