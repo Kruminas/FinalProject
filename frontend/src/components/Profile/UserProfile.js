@@ -8,7 +8,7 @@ export default function UserProfile() {
   const [forms, setForms] = useState([]);
   const [liked, setLiked] = useState([]);
   const [sfAccountName, setSfAccountName] = useState('');
-  const [sfContactName, setSfContactName] = useState('');
+  const [sfParentAccount, setsfParentAccount] = useState('');
   const [sfContactEmail, setSfContactEmail] = useState('');
   const [showSfForm, setShowSfForm] = useState(false);
   const token = localStorage.getItem('token');
@@ -43,7 +43,7 @@ export default function UserProfile() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({ sfAccountName, sfContactName, sfContactEmail })
+        body: JSON.stringify({ sfAccountName, sfParentAccount, sfContactEmail })
       });
   
       if (!res.ok) {
@@ -93,8 +93,8 @@ export default function UserProfile() {
             <label>SF Contact Name</label>
             <input
               className="form-control"
-              value={sfContactName}
-              onChange={(e) => setSfContactName(e.target.value)}
+              value={sfParentAccount}
+              onChange={(e) => setsfParentAccount(e.target.value)}
               required
             />
           </div>
