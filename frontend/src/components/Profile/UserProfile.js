@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Tabs, Tab, Button } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 export default function UserProfile() {
   const [user, setUser] = useState(null);
@@ -8,7 +8,7 @@ export default function UserProfile() {
   const [forms, setForms] = useState([]);
   const [liked, setLiked] = useState([]);
 
-  // Fields for your Salesforce form
+
   const [sfAccountName, setSfAccountName] = useState('');
   const [sfParentAccount, setSfParentAccount] = useState('');
   const [sfContactWebsite, setSfContactWebsite] = useState('');
@@ -17,8 +17,6 @@ export default function UserProfile() {
 
   const [showSfForm, setShowSfForm] = useState(false);
   const token = localStorage.getItem('token');
-  // If not needed, we can remove the navigate
-  // const navigate = useNavigate();
 
   useEffect(() => {
     if (!token) return;
@@ -43,7 +41,6 @@ export default function UserProfile() {
     e.preventDefault();
     if (!token) return;
     try {
-      // Include the fields you want to send
       const bodyData = {
         sfAccountName,
         sfParentAccount,
@@ -109,7 +106,6 @@ export default function UserProfile() {
             />
           </div>
 
-          {/* Parent Account (MUST be a valid Account Id in Salesforce if you want a Parent-Child relationship) */}
           <div className="mb-2">
             <label>SF Parent Account</label>
             <input
@@ -119,7 +115,6 @@ export default function UserProfile() {
             />
           </div>
 
-          {/* Contact Email */}
           <div className="mb-2">
             <label>SF Contact Email</label>
             <input
@@ -130,7 +125,6 @@ export default function UserProfile() {
             />
           </div>
 
-          {/* Contact Website */}
           <div className="mb-2">
             <label>SF Contact Website</label>
             <input
@@ -140,8 +134,6 @@ export default function UserProfile() {
               onChange={(e) => setSfContactWebsite(e.target.value)}
             />
           </div>
-
-          {/* Contact Phone */}
           <div className="mb-2">
             <label>SF Contact Phone</label>
             <input
@@ -156,7 +148,6 @@ export default function UserProfile() {
         </form>
       )}
 
-      {/* Tabs for Templates, Forms, Liked, etc. */}
       <Tabs defaultActiveKey="templates" id="user-profile-tabs" className="mb-3">
         <Tab eventKey="templates" title="My Templates">
           {templates.length === 0 ? (
