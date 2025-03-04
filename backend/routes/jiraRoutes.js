@@ -41,7 +41,7 @@ router.post('/ticket', async (req, res) => {
           ]
         },
         issuetype: { name: 'Task' },
-        priority: { name: priority }
+        // priority: { name: priority }
       }
     };
 
