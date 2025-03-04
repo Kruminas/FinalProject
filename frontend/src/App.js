@@ -13,7 +13,7 @@ import FormPage from './components/Forms/FormPage';
 import UserManagement from './components/Admin/UserManagement';
 import TemplateReadOnly from './components/Templates/TemplateReadOnly';
 import UserProfile from './components/Profile/UserProfile';
-import CreateJiraTicket from './CreateJiraTicket';
+import CreateJiraTicket from './components/Templates/CreateJiraTicket';
 
 export default function App() {
   return (

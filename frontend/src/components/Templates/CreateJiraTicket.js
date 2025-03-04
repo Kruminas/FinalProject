@@ -18,9 +18,7 @@ export default function CreateJiraTicket() {
           summary,
           description,
           priority,
-          // For example, we pass the current URL where the user is, or a fixed link
           link: window.location.href,
-          // You might have user’s email stored in localStorage or your global context
           reporterEmail: 'someuser@example.com',
         }),
       });
