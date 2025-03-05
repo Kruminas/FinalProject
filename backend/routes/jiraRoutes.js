@@ -3,7 +3,6 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 
-// In routes/jiraRoutes.js (modified POST endpoint)
 router.post('/ticket', async (req, res) => {
   try {
     const {
@@ -13,9 +12,7 @@ router.post('/ticket', async (req, res) => {
       JIRA_PROJECT_KEY
     } = process.env;
 
-    // Destructure reporterEmail along with other fields from the request body
-    const { summary, description, link, priority, reporterEmail } = req.body;
-    
+    const { summary, description, link, priority } = req.body;
     const jiraAuth = {
       Authorization: `Basic ${Buffer.from(
         `${JIRA_USER_EMAIL}:${JIRA_API_TOKEN}`
@@ -24,7 +21,6 @@ router.post('/ticket', async (req, res) => {
       Accept: 'application/json'
     };
 
-    // Construct the Atlassian Document Format (ADF) for description
     const adfDescription = {
       type: 'doc',
       version: 1,
@@ -32,13 +28,19 @@ router.post('/ticket', async (req, res) => {
         {
           type: 'paragraph',
           content: [
-            { type: 'text', text: description || '' }
+            {
+              text: description || '',
+              type: 'text'
+            }
           ]
         },
         {
           type: 'paragraph',
           content: [
-            { type: 'text', text: `Link: ${link}` }
+            {
+              text: `Link: ${link}`,
+              type: 'text'
+            }
           ]
         }
       ]
@@ -51,12 +53,12 @@ router.post('/ticket', async (req, res) => {
         description: adfDescription,
         issuetype: { name: 'Task' },
         priority: { name: priority },
-        reporter: { emailAddress: reporterEmail } // Attempt to set reporter field
+        
       }
     };
 
     const response = await axios.post(
-      `https://${JIRA_DOMAIN}/rest/api/3/issue`,
+      `https://${process.env.JIRA_DOMAIN}/rest/api/3/issue`,
       issueData,
       { headers: jiraAuth }
     );
@@ -65,7 +67,7 @@ router.post('/ticket', async (req, res) => {
     res.status(200).json({
       success: true,
       key,
-      url: `https://${JIRA_DOMAIN}/browse/${key}`
+      url: `https://${process.env.JIRA_DOMAIN}/browse/${key}`
     });
   } catch (error) {
     res.status(500).json({
@@ -74,7 +76,6 @@ router.post('/ticket', async (req, res) => {
     });
   }
 });
-
 
 router.get('/my-issues', async (req, res) => {
   try {
