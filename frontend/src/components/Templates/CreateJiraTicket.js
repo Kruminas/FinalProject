@@ -1,4 +1,3 @@
-// frontend/src/components/Templates/CreateJiraTicket.js
 import React, { useState, useEffect } from 'react';
 
 export default function CreateJiraTicket() {
@@ -9,10 +8,8 @@ export default function CreateJiraTicket() {
   const [error, setError] = useState('');
   const [issues, setIssues] = useState([]);
 
-  // Get reporter email from auth; here we use localStorage as an example.
-  const reporterEmail = localStorage.getItem('userEmail') || 'default@example.com';
+  const reporterEmail = localStorage.getItem('userEmail') || 'esu@example.com';
 
-  // Function to create a new Jira ticket
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
@@ -32,7 +29,6 @@ export default function CreateJiraTicket() {
       const data = await res.json();
       if (data.success) {
         setTicketUrl(data.url);
-        // Refresh the tickets list after creation
         fetchIssues();
       } else {
         setError(JSON.stringify(data.error));
@@ -42,7 +38,6 @@ export default function CreateJiraTicket() {
     }
   }
 
-  // Function to fetch tickets for the logged-in reporter
   async function fetchIssues() {
     try {
       const res = await fetch(`/api/jira/my-issues?reporterEmail=${encodeURIComponent(reporterEmail)}`);

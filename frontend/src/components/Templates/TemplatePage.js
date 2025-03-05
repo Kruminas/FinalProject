@@ -12,7 +12,7 @@ export default function TemplatePage() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [questions, setQuestions] = useState([]);
-  const [comment, setComment] = useState(''); // new comment input
+  const [comment, setComment] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -100,7 +100,7 @@ export default function TemplatePage() {
   const handleAddComment = async (e) => {
     e.preventDefault();
     if (!token) {
-      alert('Please log in to comment.');
+      alert('Please login to comment');
       return;
     }
     try {

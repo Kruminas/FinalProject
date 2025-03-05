@@ -68,7 +68,7 @@ export default function CreateTemplate() {
         const data = await res.json();
         throw new Error(data.error || data.message || 'Failed to create template');
       }
-      alert('Template created');
+      alert('Template was created');
       navigate('/');
     } catch (err) {
       alert(err.message);

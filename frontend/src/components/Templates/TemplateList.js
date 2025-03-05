@@ -25,7 +25,7 @@ export default function TemplateList() {
 
   const handleDelete = async (templateId) => {
     if (!token) {
-      alert('You must be logged in');
+      alert('You need to login');
       return;
     }
     try {
@@ -34,7 +34,7 @@ export default function TemplateList() {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error('Only admin or author can delete template');
-      alert('Template deleted');
+      alert('Template was deleted');
       fetchTemplates();
     } catch (err) {
       alert(err.message);
@@ -43,7 +43,7 @@ export default function TemplateList() {
 
   const handleEdit = (templateId) => {
     if (!token) {
-      alert('You must be logged in');
+      alert('You need to login');
       return;
     }
     navigate(`/templates/${templateId}/edit`);

@@ -71,7 +71,7 @@ export default function UserProfile() {
         throw new Error(errorMessage);
       }
   
-      alert('Information sent to Salesforce successfully');
+      alert('Information was sent to salesforce succesfully');
       setShowSfForm(false);
     } catch (err) {
       alert(err.message);
@@ -106,14 +106,14 @@ export default function UserProfile() {
             />
           </div>
 
-          <div className="mb-2">
+          {/* <div className="mb-2">
             <label>SF Parent Account</label>
             <input
               className="form-control"
               value={sfParentAccount}
               onChange={(e) => setSfParentAccount(e.target.value)}
             />
-          </div>
+          </div> */}
 
           <div className="mb-2">
             <label>SF Contact Email</label>
