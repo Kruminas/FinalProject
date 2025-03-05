@@ -77,7 +77,7 @@ export default function TemplatePage() {
   const handleSave = async () => {
 
     if (!token) {
-      alert('Login required to update template.');
+      alert('Login required to update the template.');
       return;
     }
     try {
@@ -90,7 +90,7 @@ export default function TemplatePage() {
         body: JSON.stringify({ title, description, questions })
       });
       if (!res.ok) throw new Error('Only admin or author can update template');
-      alert('Template updated');
+      alert('Template was updated');
       navigate('/');
     } catch (err) {
       alert(err.message);

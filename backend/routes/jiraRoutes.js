@@ -13,61 +13,59 @@ router.post('/ticket', async (req, res) => {
     } = process.env;
 
     const { summary, description, link, priority } = req.body;
-    const jiraAuth = {
-      Authorization: `Basic ${Buffer.from(
-        `${JIRA_USER_EMAIL}:${JIRA_API_TOKEN}`
-      ).toString('base64')}`,
+
+    const jiraAuthHeaders = {
+      Authorization: `Basic ${Buffer.from(`${JIRA_USER_EMAIL}:${JIRA_API_TOKEN}`).toString('base64')}`,
       'Content-Type': 'application/json',
       Accept: 'application/json'
     };
 
-    const adfDescription = {
+    const formattedDescription = {
       type: 'doc',
       version: 1,
       content: [
-        {
-          type: 'paragraph',
-          content: [
-            {
-              text: description || '',
-              type: 'text'
-            }
-          ]
-        },
-        {
-          type: 'paragraph',
-          content: [
-            {
-              text: `Link: ${link}`,
-              type: 'text'
-            }
-          ]
-        }
+      {
+      type: 'paragraph',
+      content: [
+      {
+      type: 'text',
+      text: description || ''
+      }
       ]
-    };
+      },
+      {
+      type: 'paragraph',
+      content: [
+      {
+      type: 'text',
+      text: `Link: ${link}`
+      }
+      ]
+      }
+      ]
+      };
 
-    const issueData = {
+    const issuePayload = {
       fields: {
         project: { key: JIRA_PROJECT_KEY },
         summary,
-        description: adfDescription,
+        description: formattedDescription,
         issuetype: { name: 'Task' },
-        priority: { name: priority },
-        
+        priority: { name: priority }
       }
     };
 
     const response = await axios.post(
-      `https://${process.env.JIRA_DOMAIN}/rest/api/3/issue`,
-      issueData,
-      { headers: jiraAuth }
+      `https://${JIRA_DOMAIN}/rest/api/3/issue`,
+      issuePayload,
+      { headers: jiraAuthHeaders }
     );
 
     const { key } = response.data;
     res.status(200).json({
       success: true,
       key,
-      url: `https://${process.env.JIRA_DOMAIN}/browse/${key}`
+      url: `https://${JIRA_DOMAIN}/browse/${key}`
     });
   } catch (error) {
     res.status(500).json({
@@ -84,20 +82,21 @@ router.get('/my-issues', async (req, res) => {
       JIRA_USER_EMAIL,
       JIRA_API_TOKEN
     } = process.env;
+
     const { reporterEmail, startAt = 0, maxResults = 10 } = req.query;
     if (!reporterEmail) {
       return res.status(400).json({ error: 'reporterEmail query parameter is required' });
     }
-    const jql = `reporter = "${reporterEmail}" ORDER BY created DESC`;
-    const searchUrl = `https://${JIRA_DOMAIN}/rest/api/3/search?jql=${encodeURIComponent(jql)}&startAt=${startAt}&maxResults=${maxResults}`;
-    const jiraAuth = {
-      Authorization: `Basic ${Buffer.from(
-        `${JIRA_USER_EMAIL}:${JIRA_API_TOKEN}`
-      ).toString('base64')}`,
+
+    const jqlQuery = `reporter = "${reporterEmail}" ORDER BY created DESC`;
+    const searchEndpoint = `https://${JIRA_DOMAIN}/rest/api/3/search?jql=${encodeURIComponent(jqlQuery)}&startAt=${startAt}&maxResults=${maxResults}`;
+
+    const jiraHeaders = {
+      Authorization: `Basic ${Buffer.from(`${JIRA_USER_EMAIL}:${JIRA_API_TOKEN}`).toString('base64')}`,
       Accept: 'application/json'
     };
 
-    const response = await axios.get(searchUrl, { headers: jiraAuth });
+    const response = await axios.get(searchEndpoint, { headers: jiraHeaders });
     res.status(200).json({ issues: response.data.issues });
   } catch (error) {
     res.status(500).json({
