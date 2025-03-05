@@ -53,7 +53,7 @@ router.post('/ticket', async (req, res) => {
         project: { key: JIRA_PROJECT_KEY },
         summary,
         description: adfDescription,
-        issuetype: { name: 'MFLP' },
+        issuetype: { name: 'Task' },
         priority: { name: priority }
       }
     };
