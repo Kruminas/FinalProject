@@ -1,33 +1,33 @@
 import React, { useEffect, useState } from 'react';
 
-export default function MyJiraTickets({ reporterEmail }) {
-  const [issues, setIssues] = useState([]);
-  const [error, setError] = useState('');
+export default function TicketOverview({ reporterEmail }) {
+  const [ticketData, setTicketData] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    async function fetchIssues() {
+    async function loadTickets() {
       try {
         const response = await fetch(
           `/api/jira/my-issues?reporterEmail=${encodeURIComponent(reporterEmail)}`
         );
-        const data = await response.json();
-        if (data.issues) {
-          setIssues(data.issues);
+        const result = await response.json();
+        if (result.issues) {
+          setTicketData(result.issues);
         } else {
-          setError(JSON.stringify(data.error));
+          setErrorMessage(JSON.stringify(result.error));
         }
-      } catch (err) {
-        setError(err.toString());
+      } catch (error) {
+        setErrorMessage(error.toString());
       }
     }
-    fetchIssues();
+    loadTickets();
   }, [reporterEmail]);
 
   return (
     <div className="container mt-4">
       <h2>My Help Tickets</h2>
-      {error && <div className="alert alert-danger">{error}</div>}
-      {issues.length === 0 ? (
+      {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+      {ticketData.length === 0 ? (
         <p>No tickets found.</p>
       ) : (
         <table className="table">
@@ -40,14 +40,15 @@ export default function MyJiraTickets({ reporterEmail }) {
             </tr>
           </thead>
           <tbody>
-            {issues.map((issue) => (
-              <tr key={issue.id}>
-                <td>{issue.key}</td>
-                <td>{issue.fields.summary}</td>
-                <td>{issue.fields.status && issue.fields.status.name}</td>
+            {ticketData.map((ticket) => (
+              <tr key={ticket.id}>
+                <td>{ticket.key}</td>
+                <td>{ticket.fields.summary}</td>
+                <td>{ticket.fields.status && ticket.fields.status.name}</td>
                 <td>
                   <a
-                    href={`https://${process.env.REACT_APP_JIRA_DOMAIN || 'dominykaskruminas.atlassian.net'}/browse/${issue.key}`}
+                    href={`https://${process.env.REACT_APP_JIRA_DOMAIN ||
+                      'dominykaskruminas.atlassian.net'}/browse/${ticket.key}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

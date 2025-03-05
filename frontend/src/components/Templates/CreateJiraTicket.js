@@ -1,80 +1,89 @@
 import React, { useState, useEffect } from 'react';
 
-export default function CreateJiraTicket() {
-  const [summary, setSummary] = useState('');
-  const [description, setDescription] = useState('');
-  const [priority, setPriority] = useState('Medium');
-  const [ticketUrl, setTicketUrl] = useState('');
-  const [error, setError] = useState('');
-  const [issues, setIssues] = useState([]);
+export default function TicketCreator() {
+  const [ticketSummary, setTicketSummary] = useState('');
+  const [ticketDescription, setTicketDescription] = useState('');
+  const [ticketPriority, setTicketPriority] = useState('Medium');
+  const [createdTicketUrl, setCreatedTicketUrl] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [ticketList, setTicketList] = useState([]);
 
   const reporterEmail = localStorage.getItem('userEmail') || 'esu@example.com';
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setError('');
-    setTicketUrl('');
+  const onFormSubmit = async (event) => {
+    event.preventDefault();
+    setErrorMessage('');
+    setCreatedTicketUrl('');
 
     try {
-      const res = await fetch('/api/jira/ticket', {
+      const response = await fetch('/api/jira/ticket', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          summary,
-          description,
+          summary: ticketSummary,
+          description: ticketDescription,
           link: window.location.href,
-          priority
-        })
+          priority: ticketPriority,
+        }),
       });
-      const data = await res.json();
-      if (data.success) {
-        setTicketUrl(data.url);
-        fetchIssues();
-      } else {
-        setError(JSON.stringify(data.error));
-      }
-    } catch (err) {
-      setError(err.toString());
-    }
-  }
+      const result = await response.json();
 
-  async function fetchIssues() {
+      if (result.success) {
+        setCreatedTicketUrl(result.url);
+        refreshTicketList();
+      } else {
+        setErrorMessage(JSON.stringify(result.error));
+      }
+    } catch (error) {
+      setErrorMessage(error.toString());
+    }
+  };
+
+  const refreshTicketList = async () => {
     try {
-      const res = await fetch(`/api/jira/my-issues?reporterEmail=${encodeURIComponent(reporterEmail)}`);
-      const data = await res.json();
-      if (data.issues) {
-        setIssues(data.issues);
-      } else {
-        setError(JSON.stringify(data.error));
-      }
-    } catch (err) {
-      setError(err.toString());
-    }
-  }
+      const response = await fetch(
+        `/api/jira/my-issues?reporterEmail=${encodeURIComponent(reporterEmail)}`
+      );
+      const result = await response.json();
 
+      if (result.issues) {
+        setTicketList(result.issues);
+      } else {
+        setErrorMessage(JSON.stringify(result.error));
+      }
+    } catch (error) {
+      setErrorMessage(error.toString());
+    }
+  };
+  
   useEffect(() => {
-    fetchIssues();
+    refreshTicketList();
   }, [reporterEmail]);
 
   return (
-    <div className="container mt-4" style={{ maxWidth: 600 }}>
+    <div className="container mt-4" style={{ maxWidth: '600px' }}>
       <h2>Create Jira Ticket</h2>
-      {ticketUrl && (
+
+      {createdTicketUrl && (
         <div className="alert alert-success">
-          Ticket created! <a href={ticketUrl} target="_blank" rel="noopener noreferrer">{ticketUrl}</a>
+          Ticket created!{' '}
+          <a href={createdTicketUrl} target="_blank" rel="noopener noreferrer">
+            {createdTicketUrl}
+          </a>
         </div>
       )}
-      {error && <div className="alert alert-danger">{error}</div>}
-      
-      <form onSubmit={handleSubmit} className="card card-body mb-4">
+
+      {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+
+      <form onSubmit={onFormSubmit} className="card card-body mb-4">
         <div className="mb-3">
           <label className="form-label">Summary</label>
           <input
             type="text"
             className="form-control"
-            value={summary}
-            onChange={(e) => setSummary(e.target.value)}
-            placeholder="Brief issue summary"
+            value={ticketSummary}
+            onChange={(e) => setTicketSummary(e.target.value)}
+            placeholder="Enter a brief summary"
             required
           />
         </div>
@@ -84,9 +93,9 @@ export default function CreateJiraTicket() {
           <textarea
             className="form-control"
             rows="4"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Detailed description of the issue"
+            value={ticketDescription}
+            onChange={(e) => setTicketDescription(e.target.value)}
+            placeholder="Provide a detailed description"
           />
         </div>
 
@@ -94,8 +103,8 @@ export default function CreateJiraTicket() {
           <label className="form-label">Priority</label>
           <select
             className="form-select"
-            value={priority}
-            onChange={(e) => setPriority(e.target.value)}
+            value={ticketPriority}
+            onChange={(e) => setTicketPriority(e.target.value)}
           >
             <option value="Highest">Highest</option>
             <option value="High">High</option>
@@ -111,7 +120,7 @@ export default function CreateJiraTicket() {
       </form>
 
       <h3>My Tickets</h3>
-      {issues.length === 0 ? (
+      {ticketList.length === 0 ? (
         <p>No tickets found.</p>
       ) : (
         <table className="table">
@@ -124,14 +133,15 @@ export default function CreateJiraTicket() {
             </tr>
           </thead>
           <tbody>
-            {issues.map((issue) => (
-              <tr key={issue.id}>
-                <td>{issue.key}</td>
-                <td>{issue.fields.summary}</td>
-                <td>{issue.fields.status && issue.fields.status.name}</td>
+            {ticketList.map((ticket) => (
+              <tr key={ticket.id}>
+                <td>{ticket.key}</td>
+                <td>{ticket.fields.summary}</td>
+                <td>{ticket.fields.status && ticket.fields.status.name}</td>
                 <td>
                   <a
-                    href={`https://${process.env.REACT_APP_JIRA_DOMAIN || 'dominykaskruminas.atlassian.net'}/browse/${issue.key}`}
+                    href={`https://${process.env.REACT_APP_JIRA_DOMAIN ||
+                      'dominykaskruminas.atlassian.net'}/browse/${ticket.key}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

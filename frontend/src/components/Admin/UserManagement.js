@@ -29,8 +29,8 @@ export default function UserManagement() {
         method: 'PATCH',
         headers: { Authorization: `Bearer ${token}` }
       });
-      if (!res.ok) throw new Error('Failed to block user');
-      alert('User blocked');
+      if (!res.ok) throw new Error('Failed to block the user');
+      alert('User was blocked');
       fetchUsers();
     } catch (err) {
       alert(err.message);
@@ -44,7 +44,7 @@ export default function UserManagement() {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (!res.ok) throw new Error('Failed to unblock user');
-      alert('User unblocked');
+      alert('User was unblocked');
       fetchUsers();
     } catch (err) {
       alert(err.message);
@@ -58,7 +58,7 @@ export default function UserManagement() {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (!res.ok) throw new Error('Failed to delete user');
-      alert('User deleted');
+      alert('User was deleted');
       fetchUsers();
     } catch (err) {
       alert(err.message);
@@ -86,7 +86,7 @@ export default function UserManagement() {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (!res.ok) throw new Error('Failed to remove admin');
-      alert('Admin rights removed');
+      alert('Admin rights was removed');
       fetchUsers();
     } catch (err) {
       alert(err.message);
