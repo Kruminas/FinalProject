@@ -9,8 +9,8 @@ export default function CreateJiraTicket() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setTicketUrl('');
     setError('');
+    setTicketUrl('');
 
     try {
       const res = await fetch('/api/jira/ticket', {

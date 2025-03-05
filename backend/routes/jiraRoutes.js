@@ -12,7 +12,9 @@ router.post('/ticket', async (req, res) => {
       JIRA_PROJECT_KEY
     } = process.env;
 
+
     const { summary, description, link, priority } = req.body;
+
     const jiraAuth = {
       Authorization: `Basic ${Buffer.from(
         `${JIRA_USER_EMAIL}:${JIRA_API_TOKEN}`
@@ -21,27 +23,38 @@ router.post('/ticket', async (req, res) => {
       Accept: 'application/json'
     };
 
+    const adfDescription = {
+      type: 'doc',
+      version: 1,
+      content: [
+        {
+          type: 'paragraph',
+          content: [
+            {
+              text: description || '',
+              type: 'text'
+            }
+          ]
+        },
+        {
+          type: 'paragraph',
+          content: [
+            {
+              text: `Link: ${link}`,
+              type: 'text'
+            }
+          ]
+        }
+      ]
+    };
+
     const issueData = {
       fields: {
         project: { key: JIRA_PROJECT_KEY },
         summary,
-        description: {
-          type: 'doc',
-          version: 1,
-          content: [
-            {
-              type: 'paragraph',
-              content: [
-                {
-                  text: `${description}\n\nLink: ${link}`,
-                  type: 'text'
-                }
-              ]
-            }
-          ]
-        },
+        description: adfDescription,
         issuetype: { name: 'Task' },
-        priority: { name: 'High' }
+        priority: { name: priority }
       }
     };
 
@@ -52,13 +65,13 @@ router.post('/ticket', async (req, res) => {
     );
 
     const { key } = response.data;
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       key,
       url: `https://${JIRA_DOMAIN}/browse/${key}`
     });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       error: error?.response?.data || error.message
     });
