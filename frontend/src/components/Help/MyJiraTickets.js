@@ -47,7 +47,7 @@ export default function MyJiraTickets({ reporterEmail }) {
                 <td>{issue.fields.status && issue.fields.status.name}</td>
                 <td>
                   <a
-                    href={`https://${process.env.REACT_APP_JIRA_DOMAIN || 'your-domain.atlassian.net'}/browse/${issue.key}`}
+                    href={`https://${process.env.REACT_APP_JIRA_DOMAIN || 'dominykaskruminas.atlassian.net'}/browse/${issue.key}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
