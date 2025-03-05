@@ -75,7 +75,7 @@ export default function TicketCreator() {
         className="container mt-4"
         style={{
           maxWidth: 600,
-          background: 'rgba(255, 255, 255, 0.9)',
+          background: 'white',
           padding: '20px',
           borderRadius: '8px',
         }}
