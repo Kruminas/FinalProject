@@ -75,9 +75,11 @@ export default function CreateJiraTicket() {
             value={priority}
             onChange={(e) => setPriority(e.target.value)}
           >
+            <option value="Highest">Highest</option>
             <option value="High">High</option>
             <option value="Medium">Medium</option>
             <option value="Low">Low</option>
+            <option value="Lowest">Lowest</option>
           </select>
         </div>
 
