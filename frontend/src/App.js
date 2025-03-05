@@ -14,7 +14,6 @@ import UserManagement from './components/Admin/UserManagement';
 import TemplateReadOnly from './components/Templates/TemplateReadOnly';
 import UserProfile from './components/Profile/UserProfile';
 import CreateJiraTicket from './components/Templates/CreateJiraTicket';
-import HelpPage from './components/Help/HelpPage';
 
 export default function App() {
   return (
@@ -34,7 +33,6 @@ export default function App() {
         <Route path="/admin/users" element={<UserManagement />} />
         <Route path="/profile" element={<UserProfile />} />
         <Route path="/create-jira-ticket" element={<CreateJiraTicket />} />
-        <Route path="/help" element={<HelpPage />} />
       </Routes>
     </Router>
   );

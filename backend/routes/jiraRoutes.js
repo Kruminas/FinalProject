@@ -52,7 +52,8 @@ router.post('/ticket', async (req, res) => {
         summary,
         description: adfDescription,
         issuetype: { name: 'Task' },
-        priority: { name: priority }
+        priority: { name: priority },
+        customfield_12345: reporterEmail 
       }
     };
 
@@ -87,7 +88,8 @@ router.get('/my-issues', async (req, res) => {
     if (!reporterEmail) {
       return res.status(400).json({ error: 'reporterEmail query parameter is required' });
     }
-    const jql = `reporter = "${reporterEmail}" ORDER BY created DESC`;
+
+    const jql = `cf[12345] ~ "${reporterEmail}" ORDER BY created DESC`;
     const searchUrl = `https://${JIRA_DOMAIN}/rest/api/3/search?jql=${encodeURIComponent(jql)}&startAt=${startAt}&maxResults=${maxResults}`;
     const jiraAuth = {
       Authorization: `Basic ${Buffer.from(
