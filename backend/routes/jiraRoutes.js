@@ -12,7 +12,7 @@ router.post('/ticket', async (req, res) => {
       JIRA_PROJECT_KEY
     } = process.env;
 
-    const { summary, description, link, priority } = req.body;
+    const { summary, description, link, Priority } = req.body;
     const jiraAuth = {
       Authorization: `Basic ${Buffer.from(
         `${JIRA_USER_EMAIL}:${JIRA_API_TOKEN}`
@@ -41,7 +41,7 @@ router.post('/ticket', async (req, res) => {
           ]
         },
         issuetype: { name: 'Task' },
-        priority: { name: priority }
+        Priority: { name: Priority }
       }
     };
 
